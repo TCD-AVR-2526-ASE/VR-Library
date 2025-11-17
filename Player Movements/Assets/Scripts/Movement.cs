@@ -44,8 +44,8 @@ public class PlayerController : MonoBehaviour
 
         // Apply movement
         Vector3 newVel = moveDir * playerSpeed;
-        newVel.y = rb.velocity.y;        // keep existing Y velocity (gravity)
-        rb.velocity = newVel;
+        newVel.y = rb.linearVelocity.y;        // keep existing Y velocity (gravity)
+        rb.linearVelocity = newVel;
 
         // ----- Jump -----
         if (Input.GetKeyDown(KeyCode.Space))
