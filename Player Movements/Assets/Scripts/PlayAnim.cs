@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LookAndTrigger : MonoBehaviour
+public class PlayAnim : StateMachineBehaviour
 {
     [Header("Settings")]
     public float rayDistance = 5f;
@@ -11,21 +11,22 @@ public class LookAndTrigger : MonoBehaviour
 
     private Animator targetAnimator;
 
-    void Update()
+    // Update is NOT called automatically in StateMachineBehaviour.
+    // You must use OnStateUpdate instead.
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         RaycastHit hit;
 
-        // Shoot ray from camera forward
-        if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, interactLayer))
+        // Use animator.transform instead of transform
+        Transform t = animator.transform;
+
+        if (Physics.Raycast(t.position, t.forward, out hit, rayDistance, interactLayer))
         {
-            // Check if hit object has animator
             targetAnimator = hit.collider.GetComponent<Animator>();
 
-            // Show debug ray so you can see what's happening
-            Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.green);
+            Debug.DrawRay(t.position, t.forward * rayDistance, Color.green);
 
-            // If pressing key while looking
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(0))
             {
                 if (targetAnimator != null)
                 {
@@ -36,9 +37,8 @@ public class LookAndTrigger : MonoBehaviour
         }
         else
         {
-            // Not looking at anything
             targetAnimator = null;
-            Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);
+            Debug.DrawRay(t.position, t.forward * rayDistance, Color.red);
         }
     }
 }
