@@ -1,17 +1,18 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     public float playerSpeed;
-    public float sprintSpeed = 4f;
-    public float walkSpeed = 2f;
-    public float mouseSensitivity = 2f;
+    public float sprintSpeed = 10f;
+    public float walkSpeed = 5f;
+    public float mouseSensitivity = 1f;
     public float jumpForce = 5f;
 
     public Transform cameraPivot;  // Camera parent for vertical rotation
 
     private bool isMoving = false;
     private bool isSprinting = false;
+    private bool isJumping = false;
     private float yRot;
     private float xRot;
 
@@ -79,10 +80,11 @@ public class PlayerController : MonoBehaviour
             isSprinting = false;
         }
 
-        // ----- Anim -----
-        if (anim != null)
+            // ----- Anim -----
+            if (anim != null)
         {
             anim.SetBool("isMoving", isMoving);
+            anim.SetBool("isJumping", isJumping);
             anim.SetBool("isSprinting", isSprinting);
         }
     }
