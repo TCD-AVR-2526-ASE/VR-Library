@@ -8,14 +8,13 @@ public class Movement : MonoBehaviour
     public float mouseSensitivity = 1f;
     public float jumpForce = 5f;
 
-    public Transform cameraPivot;  // Camera parent for vertical rotation
+    public Transform cameraPivot;
 
     private bool isMoving = false;
     private bool isSprinting = false;
     private bool isJumping = false;
-    private float yRot;
-    private float xRot;
 
+    private float xRot = 0f;
     private Animator anim;
     private Rigidbody rb;
 
@@ -29,46 +28,66 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = true;
 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        // ----- Mouse Look -----
+        HandleMouseLook();
+        HandleMovement();
+        HandleJump();
+        HandleSprint();
+        HandleAnimations();
+    }
+
+    // ---------------- CAMERA LOOK ----------------
+    void HandleMouseLook()
+    {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        transform.Rotate(0f, mouseX, 0f);
+
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-
-        yRot += mouseX;
-        transform.rotation = Quaternion.Euler(0f, yRot, 0f);
-
-        xRot -= mouseY;
+        xRot -= mouseY / 2;
         xRot = Mathf.Clamp(xRot, -80f, 80f);
         cameraPivot.localRotation = Quaternion.Euler(xRot, 0f, 0f);
+    }
 
-        isMoving = false;
-
-        // ----- Movement -----
+    // ---------------- MOVEMENT ----------------
+    void HandleMovement()
+    {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        Vector3 moveDir = Vector3.zero;
+        isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
 
-        if (Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f)
-        {
-            moveDir = (transform.right * horizontal + transform.forward * vertical).normalized;
-            isMoving = true;
-        }
+        Vector3 moveDir = (transform.right * horizontal + transform.forward * vertical).normalized;
 
-        Vector3 newVel = moveDir * playerSpeed;
-        newVel.y = rb.linearVelocity.y;
-        rb.linearVelocity = newVel;
+        Vector3 vel = moveDir * playerSpeed;
+        vel.y = rb.linearVelocity.y;        // FIXED
+        rb.linearVelocity = vel;            // FIXED
+    }
 
-        // ----- Jump -----
-        if (Input.GetKeyDown(KeyCode.Space))
+    // ---------------- JUMP ----------------
+    void HandleJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isJumping = true;
         }
+        Debug.Log("Jump"+isJumping);
+    }
 
-        // ----- Sprint -----
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.collider.CompareTag("Ground"))
+            isJumping = false;
+        Debug.Log("onCollision"+isJumping);
+    }
+
+    // ---------------- SPRINT ----------------
+    void HandleSprint()
+    {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             playerSpeed = sprintSpeed;
@@ -79,13 +98,16 @@ public class Movement : MonoBehaviour
             playerSpeed = walkSpeed;
             isSprinting = false;
         }
+    }
 
-            // ----- Anim -----
-            if (anim != null)
-        {
-            anim.SetBool("isMoving", isMoving);
-            anim.SetBool("isJumping", isJumping);
-            anim.SetBool("isSprinting", isSprinting);
-        }
+    // ---------------- ANIMATIONS ----------------
+    void HandleAnimations()
+    {
+        if (anim == null) return;
+
+        anim.SetBool("isMoving", isMoving);
+        anim.SetBool("isSprinting", isSprinting);
+        anim.SetBool("isJumping", isJumping);
+        Debug.Log("AnimJump"+isJumping);
     }
 }

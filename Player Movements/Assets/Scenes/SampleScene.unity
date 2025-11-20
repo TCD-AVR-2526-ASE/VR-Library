@@ -177,6 +177,38 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &633073529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 633073530}
+  m_Layer: 0
+  m_Name: CameraPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &633073530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633073529}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.04382, y: 1.008, z: 2.11}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 963194228}
+  m_Father: {fileID: 647334807}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &647334806 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3e2822dc85e71c84886c40e9344f3e37, type: 3}
@@ -247,7 +279,7 @@ MonoBehaviour:
   walkSpeed: 5
   mouseSensitivity: 1
   jumpForce: 5
-  cameraPivot: {fileID: 963194228}
+  cameraPivot: {fileID: 633073530}
 --- !u!54 &647334811
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -469,13 +501,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10287234, y: -0, z: -0, w: 0.9946946}
-  m_LocalPosition: {x: 0.04382, y: 2.043, z: -2.423}
+  m_LocalRotation: {x: 0.16024879, y: -0, z: -0, w: 0.9870767}
+  m_LocalPosition: {x: 0, y: 1.2919998, z: -4.47}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 647334807}
-  m_LocalEulerAnglesHint: {x: 11.809, y: 0, z: 0}
+  m_Father: {fileID: 633073530}
+  m_LocalEulerAnglesHint: {x: 18.443, y: 0, z: 0}
 --- !u!1001 &1012637230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -533,7 +565,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3e2822dc85e71c84886c40e9344f3e37, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 963194228}
+      addedObject: {fileID: 633073530}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3e2822dc85e71c84886c40e9344f3e37, type: 3}
       insertIndex: -1
@@ -566,7 +598,7 @@ GameObject:
   - component: {fileID: 1666433357}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -659,7 +691,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 79.14, y: 79.14, z: 79.14}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
