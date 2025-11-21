@@ -24,16 +24,22 @@ public class ItemHolder : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, pickupRange))
         {
+            Debug.Log("The book is seen");
             if (hit.collider.CompareTag("Item"))
             {
                 currentItem = hit.collider.gameObject;
-                currentItem.GetComponent<Rigidbody>().isKinematic = true;
+                Debug.Log("Picked up");
+                Rigidbody rb = currentItem.GetComponent<Rigidbody>();
+                if (rb != null)
+                    rb.isKinematic = true;
+
                 currentItem.transform.SetParent(hand);
                 currentItem.transform.localPosition = Vector3.zero;
                 currentItem.transform.localRotation = Quaternion.identity;
             }
         }
     }
+
 
     void DropItem()
     {

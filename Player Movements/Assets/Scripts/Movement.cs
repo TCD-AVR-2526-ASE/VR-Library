@@ -75,14 +75,12 @@ public class Movement : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isJumping = true;
         }
-        Debug.Log("Jump"+isJumping);
     }
 
     void OnCollisionEnter(Collision col)
     {
         if (col.collider.CompareTag("Ground"))
             isJumping = false;
-        Debug.Log("onCollision"+isJumping);
     }
 
     // ---------------- SPRINT ----------------
@@ -108,6 +106,5 @@ public class Movement : MonoBehaviour
         anim.SetBool("isMoving", isMoving);
         anim.SetBool("isSprinting", isSprinting);
         anim.SetBool("isJumping", isJumping);
-        Debug.Log("AnimJump"+isJumping);
     }
 }
