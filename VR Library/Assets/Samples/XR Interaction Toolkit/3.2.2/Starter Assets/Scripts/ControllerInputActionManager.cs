@@ -465,6 +465,13 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             // Disable ability to turn when using continuous movement
             SetEnabled(m_Turn, !m_SmoothMotionEnabled && m_SmoothTurnEnabled);
             SetEnabled(m_SnapTurn, !m_SmoothMotionEnabled && !m_SmoothTurnEnabled);
+
+            Debug.Log(
+                $"[InputManager:{gameObject.name}] " +
+                $"SmoothMotion={m_SmoothMotionEnabled}, SmoothTurn={m_SmoothTurnEnabled}, " +
+                $"TurnEnabled={!m_SmoothMotionEnabled && m_SmoothTurnEnabled}, " +
+                $"SnapTurnEnabled={!m_SmoothMotionEnabled && !m_SmoothTurnEnabled}"
+            );
         }
 
         void DisableTeleportActions()
