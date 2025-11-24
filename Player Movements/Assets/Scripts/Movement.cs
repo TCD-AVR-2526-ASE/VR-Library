@@ -7,6 +7,7 @@ public class Movement : MonoBehaviour
     public float walkSpeed = 5f;
     public float mouseSensitivity = 1f;
     public float jumpForce = 5f;
+    public float sprintJumpingForce = 7f;
 
     public Transform cameraPivot;
 
@@ -97,6 +98,15 @@ public class Movement : MonoBehaviour
             isSprinting = false;
         }
     }
+    void OnAnimatorMove()
+    {
+        if (anim.applyRootMotion)
+        {
+            Vector3 delta = anim.deltaPosition;
+            rb.MovePosition(rb.position + delta);
+        }
+    }
+
 
     // ---------------- ANIMATIONS ----------------
     void HandleAnimations()
