@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ItemHolder : MonoBehaviour
 {
     public Transform hand;
-    public float pickupRange = 3f;
+    public float pickupRange = 5f;
     public GameObject currentItem;
 
     void Update()
@@ -19,16 +19,28 @@ public class ItemHolder : MonoBehaviour
 
     void TryPickup()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 origin = Camera.main.transform.position;
+        Vector3 direction = Camera.main.transform.forward;
+
+        float radius = 0.5f; // radius of the sphere (tweak)
+        float maxDistance = pickupRange;
+
+        Debug.DrawRay(origin, direction * maxDistance, Color.red);
+
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, pickupRange))
+        // Debug spherecast (for Scene view)
+        Debug.DrawRay(origin, direction * maxDistance, Color.cyan);
+
+        if (Physics.SphereCast(origin, radius, direction, out hit, maxDistance))
         {
-            Debug.Log("The book is seen");
+            // Make sure ONLY ITEM gets picked
             if (hit.collider.CompareTag("Item"))
             {
+                Debug.Log("Picked up: " + hit.collider.name);
+
                 currentItem = hit.collider.gameObject;
-                Debug.Log("Picked up");
+
                 Rigidbody rb = currentItem.GetComponent<Rigidbody>();
                 if (rb != null)
                     rb.isKinematic = true;
