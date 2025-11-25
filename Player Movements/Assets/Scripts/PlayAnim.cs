@@ -1,44 +1,36 @@
 using UnityEngine;
 
-public class PlayAnim : StateMachineBehaviour
+public class PlayAnim : MonoBehaviour
 {
-    [Header("Settings")]
     public float rayDistance = 5f;
-    public KeyCode triggerKey = KeyCode.E;
-
-    [Header("Highlight / Debug")]
+    public KeyCode interactionKey = KeyCode.E;
     public LayerMask interactLayer;
 
-    private Animator targetAnimator;
+    private Animator playerAnimator;
 
-    // Update is NOT called automatically in StateMachineBehaviour.
-    // You must use OnStateUpdate instead.
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    void Start()
     {
+        // Automatically find the player's animator
+        playerAnimator = GetComponentInParent<Animator>();
+    }
+
+    void Update()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-        // Use animator.transform instead of transform
-        Transform t = animator.transform;
+        bool hitSomething = Physics.Raycast(ray, out hit, rayDistance, interactLayer);
 
-        if (Physics.Raycast(t.position, t.forward, out hit, rayDistance, interactLayer))
+        Debug.DrawRay(ray.origin, ray.direction * rayDistance, hitSomething ? Color.green : Color.red);
+
+        if (hitSomething)
         {
-            targetAnimator = hit.collider.GetComponent<Animator>();
-
-            Debug.DrawRay(t.position, t.forward * rayDistance, Color.green);
-
-            if (Input.GetMouseButtonDown(0))
+            // Press E to play animation
+            if (Input.GetKeyDown(interactionKey))
             {
-                if (targetAnimator != null)
-                {
-                    targetAnimator.SetTrigger("PlayAnim");
-                    Debug.Log("Animation Triggered!");
-                }
+                playerAnimator.SetTrigger("PlayAction");
+                Debug.Log("Interaction animation triggered!");
             }
-        }
-        else
-        {
-            targetAnimator = null;
-            Debug.DrawRay(t.position, t.forward * rayDistance, Color.red);
         }
     }
 }

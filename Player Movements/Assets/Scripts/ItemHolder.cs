@@ -30,22 +30,18 @@ public class ItemHolder : MonoBehaviour
         Vector3 origin = Camera.main.transform.position;
         Vector3 direction = Camera.main.transform.forward;
 
-        float radius = 0.5f; // radius of the sphere (tweak)
+        float radius = 0.5f;
         float maxDistance = pickupRange;
 
         RaycastHit hit;
 
-        // Debug spherecast (for Scene view)
         Debug.DrawRay(origin, direction * maxDistance, Color.cyan);
 
         if (Physics.SphereCast(origin, radius, direction, out hit, maxDistance))
         {
-            if (Physics.SphereCast(origin, radius, direction, out hit, maxDistance))
-            {
-                DrawSphereCast(origin, direction, maxDistance, radius, Color.green);
-            }
-                // Make sure ONLY ITEM gets picked
-                if (hit.collider.CompareTag("Item"))
+            DrawSphereCast(origin, direction, maxDistance, radius, Color.green);
+
+            if (hit.collider.CompareTag("Item"))
             {
                 Debug.Log("Picked up: " + hit.collider.name);
 
@@ -54,15 +50,16 @@ public class ItemHolder : MonoBehaviour
                 Rigidbody rb = currentItem.GetComponent<Rigidbody>();
                 if (rb != null)
                     rb.isKinematic = true;
-                currentItem.transform.SetParent(null);
-                isGrabbing = true;
 
-                currentItem.transform.SetParent(hand);
-                currentItem.transform.localPosition = Vector3.zero;
-                currentItem.transform.localRotation = Quaternion.identity;
+                // TEMP unparent (book floats freely until grab)
+                currentItem.transform.SetParent(null);
+
+                // start smooth grab animation
+                isGrabbing = true;
             }
         }
     }
+
 
     void SmoothGrab()
     {
