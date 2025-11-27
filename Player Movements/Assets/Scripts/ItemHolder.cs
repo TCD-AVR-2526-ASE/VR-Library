@@ -40,6 +40,7 @@ public class ItemHolder : MonoBehaviour
         if (Physics.SphereCast(origin, radius, direction, out hit, maxDistance))
         {
             DrawSphereCast(origin, direction, maxDistance, radius, Color.green);
+            DebugDrawSphere(origin, radius, Color.red);
 
             if (hit.collider.CompareTag("Item"))
             {

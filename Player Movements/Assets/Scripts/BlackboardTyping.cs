@@ -11,6 +11,9 @@ public class BlackboardTyping : MonoBehaviour
     {
         foreach (char c in Input.inputString)
         {
+            //I need to switch to the Blackboard Camera when player stands near it and start typing where player doesnt move
+
+
             // Handle newline
             if (c == '\n' || c == '\r')
             {
