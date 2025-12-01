@@ -21,7 +21,7 @@ public class BlackboardInteraction : MonoBehaviour
     void Update()
     {
         // ENTER writing mode (only if near + not already writing)
-        if (insideZone && !isWriting && Input.GetKeyDown(KeyCode.G))
+        if (!isWriting && insideZone && Input.GetKeyDown(KeyCode.G))
         {
             EnterBlackboard();
         }
@@ -58,6 +58,9 @@ public class BlackboardInteraction : MonoBehaviour
         movementScript.enabled = false;
         typingScript.enabled = true;
 
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+
     }
 
     void ExitBlackboard()
@@ -69,5 +72,8 @@ public class BlackboardInteraction : MonoBehaviour
 
         movementScript.enabled = true;
         typingScript.enabled = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }
