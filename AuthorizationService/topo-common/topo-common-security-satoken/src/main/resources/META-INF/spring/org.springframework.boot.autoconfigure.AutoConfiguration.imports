@@ -1,0 +1,2 @@
+com.geoscene.topo.common.security.config.SaTokenConfigure
+com.geoscene.topo.common.security.config.IgnoreUrlsConfig
