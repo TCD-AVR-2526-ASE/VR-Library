@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 public class BookSystem : MonoBehaviour
 {
     public int bookSum = 100;
-    public string savePath = "D:\\Documents\\Homework\\ase\\Books\\Resources";
+    public string savePath = ".\\Resources";
     private int bookCount = 0;
     private Dictionary<string, Book> books;
     private List<string> bookKeys;

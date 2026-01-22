@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
@@ -50,7 +50,7 @@ public class BookPaginator : MonoBehaviour
                     {
                         if (IsNiceBreakChar(line[i]))
                         {
-                            breakPos = i + 1; // ±£¡Ù’‚∏ˆ∑÷∏Ù∑˚
+                            breakPos = i + 1; // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ÷∏ÔøΩÔøΩ
                             break;
                         }
                     }
@@ -84,20 +84,20 @@ public class BookPaginator : MonoBehaviour
 
     private static bool IsNiceBreakChar(char c)
     {
-        return char.IsWhiteSpace(c)
-               || c == ','
-               || c == '.'
-               || c == ':'
-               || c == ';'
-               || c == '?'
-               || c == '!'
-               || c == '-'
-               || c == '°™'
-               || c == '£¨'
-               || c == '°£'
-               || c == '£∫'
-               || c == '£ª'
-               || c == '£ø'
-               || c == '£°';
+        return char.IsWhiteSpace(c) ||
+                c == ',' ||
+                c == '.' ||
+                c == ':' ||
+                c == ';' ||
+                c == '?' ||
+                c == '!' ||
+                c == '-' ||
+                c == '‚Äî' ||
+                c == 'Ôºå' ||
+                c == '„ÄÇ' ||
+                c == 'Ôºö' ||
+                c == 'Ôºõ' ||
+                c == 'Ôºü' ||
+                c == 'ÔºÅ'; 
     }
 }
