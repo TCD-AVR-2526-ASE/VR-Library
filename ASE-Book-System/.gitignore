@@ -1,0 +1,80 @@
+# =====================
+# OS / Editor
+# =====================
+.DS_Store
+Thumbs.db
+
+# VS / VSCode
+.vs/
+.vscode/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+.vsconfig
+
+# =====================
+# Python
+# =====================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv
+venv/
+
+# =====================
+# CMake / C++
+# =====================
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+
+# =====================
+# Unity / Game / Graphics（如果你有）
+# =====================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+UserSettings/
+Logs/
+MemoryCaptures/
+
+# =====================
+# Jupyter / ML
+# =====================
+.ipynb_checkpoints/
+*.pt
+*.pth
+*.onnx
+*.ckpt
+
+# =====================
+# Logs / Outputs
+# =====================
+*.log
+*.tmp
+*.bak
+output/
+outputs/
+runs/
+
+# =====================
+# Git 子模块/误触防护
+# =====================
+**/.git
