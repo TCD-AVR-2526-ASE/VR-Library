@@ -1,0 +1,57 @@
+server:
+  port: 6201
+
+spring:
+  application:
+    name: topo-boot
+  profiles:
+    active: dev
+
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  # expire time default value is one day
+  timeout: 86400
+  autoRenew: false
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: random-128
+  is-log: false
+
+
+secure:
+  ignore:
+    urls: #whitelist
+      - "/doc.html"
+      - "/swagger-resources/**"
+      - "/swagger/**"
+      - "/*/api-docs"
+      - "/*/api-docs/**"
+      - "/*/*.js"
+      - "/*/*.css"
+      - "/*/*.png"
+      - "/favicon.ico"
+      - "/webjars/**"
+      - "/actuator/**"
+      - "/auth/**"
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'Operations Management'
+      paths-to-match: '/**'
+      packages-to-scan: edu.tcd.library.admin
+
+
+netty:
+  service-name: topo-im
+  port: 8877
+  heartbeat-time: 30
