@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System.IO;
 using NUnit.Framework;
@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
+using echo17.EndlessBook;
 
 [System.Serializable]
 public class BookResponse
@@ -38,9 +39,6 @@ public class BookLoader : MonoBehaviour
     public TMP_InputField inputName;
     public BookSystem bookSystem;
 
-    private List<string> pages;
-    private int pageIndex = 0;
-    private int pageCount = 0;
     string content;
 
     public async void RequestBook(bool online)
@@ -77,6 +75,8 @@ public class BookLoader : MonoBehaviour
             
         }
 
+        // duplicate pagination because test of local DB as well
+        // remove one set & throw the other into the book data struct.
         content = "Paginating...";
         Paginate();
         textAreaLeft.fontSize = 10f;
@@ -98,16 +98,12 @@ public class BookLoader : MonoBehaviour
     }
 
 
-    public void NextPage()
+    public void DisplayNewPage(Book book)
     {
-        pageIndex = pageIndex < pageCount - 2 ? pageIndex + 2 : pageIndex;
-        ShowPage();
-    }
-
-    public void PrevPage()
-    {
-        pageIndex = pageIndex > 0 ? pageIndex - 2 : pageIndex;
-        ShowPage();
+        Tuple<string, string> pages = book.GetPageText();
+        if (pages == null) return;
+        textAreaLeft.text = pages.Item1;
+        textAreaRight.text = pages.Item2 ?? "";
     }
 
     void LoadText(string path)
@@ -125,13 +121,6 @@ public class BookLoader : MonoBehaviour
         pages = await BookPaginator.Paginate(content);
         pageCount = pages.Count;
         pageIndex = 0;
-    }
-
-    void ShowPage()
-    {
-        if (pages == null) return;
-        textAreaLeft.text = pages[pageIndex];
-        textAreaRight.text = pageIndex + 1 >= pageCount ? "" : pages[pageIndex + 1];
     }
 
     async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)
