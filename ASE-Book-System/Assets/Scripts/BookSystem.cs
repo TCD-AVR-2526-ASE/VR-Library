@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 public class BookSystem : MonoBehaviour
 {
     public int bookSum = 100;
-    public string savePath = ".\\Resources";
+    private string savePath = "Assets\\Resources\\";
     private int bookCount = 0;
     private Dictionary<string, Book> books;
     private List<string> bookKeys;
@@ -19,6 +19,8 @@ public class BookSystem : MonoBehaviour
 
         if(books.ContainsKey(target))
             return Task.FromResult(books[target]);
+
+        Debug.Log(target);
 
         return null;
     }
@@ -68,6 +70,8 @@ public class BookSystem : MonoBehaviour
         books = new Dictionary<string, Book>(bookSum);
         bookKeys = new List<string>(bookSum);
         bookIds = new List<string>(bookSum);
+
+        Debug.Log("Awake: "+savePath);
 
         string[] files = Directory.GetFiles(savePath, "*.txt");
 

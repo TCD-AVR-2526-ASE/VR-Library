@@ -12,14 +12,14 @@ def search():
     success = False
 
     if book_id:
-        download_gutenberg_txt(book_id, f"./Resources/{book_name}_{book_id}.txt")
+        download_gutenberg_txt(book_id, f"../Resources/{book_name}_{book_id}.txt")
         success = True
 
     return jsonify({
         "name": book_name,
         "id": book_id,
         "success": success,
-        "path": f"D:/Documents/Homework/ase/Books/Resources/{book_name}_{book_id}.txt"
+        "path": f"../Resources/{book_name}_{book_id}.txt"
     })
 
 
@@ -50,7 +50,7 @@ def download_gutenberg_txt(book_id, save_path):
     with open(save_path, "wb") as f:
         f.write(r.content)
 
-    print(f"Successfully downloaded!\n")
+    print(f"Successfully downloaded at:",save_path)
     return save_path
 
 app.run(port=5000)

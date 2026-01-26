@@ -444,6 +444,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BookPart
       objectReference: {fileID: 0}
+    - target: {fileID: 4011412645166013720, guid: 3a92ffd049b8d134089dbc42bf15ecf3, type: 3}
+      propertyPath: savePath
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7043140204957554913, guid: 3a92ffd049b8d134089dbc42bf15ecf3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
