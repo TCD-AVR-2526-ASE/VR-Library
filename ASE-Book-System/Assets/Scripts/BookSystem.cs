@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 public class BookSystem : MonoBehaviour
 {
     public int bookSum = 100;
-    private string savePath = "../Assets/Resources/";
+    private string savePath = "Assets\\Resources\\";
     private int bookCount = 0;
     private Dictionary<string, Book> books;
     private List<string> bookKeys;
@@ -19,6 +19,8 @@ public class BookSystem : MonoBehaviour
 
         if(books.ContainsKey(target))
             return Task.FromResult(books[target]);
+
+        Debug.Log(target);
 
         return null;
     }
@@ -69,13 +71,17 @@ public class BookSystem : MonoBehaviour
         bookKeys = new List<string>(bookSum);
         bookIds = new List<string>(bookSum);
 
-        TextAsset[] files = Resources.LoadAll<TextAsset>("");
+        Debug.Log("Awake: "+savePath);
 
-        foreach (TextAsset file in files)
+        string[] files = Directory.GetFiles(savePath, "*.txt");
+
+        foreach (string file in files)
         {
+            string fileName = Path.GetFileNameWithoutExtension(file);
+
             BookResponse response = new BookResponse();
-            response.name = file.name.Split('_')[0];
-            response.path = file.name; // IMPORTANT
+            response.name = fileName.Split('_')[0];
+            response.path = file;
             response.success = true;
 
             AddBook(response);

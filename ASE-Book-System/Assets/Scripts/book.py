@@ -20,11 +20,12 @@ def search():
     resource_key = None
 
     if book_id:
+<<<<<<<< HEAD:book.py
         safe_name = safe_filename(book_name)
 
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         RESOURCES_DIR = os.path.abspath(
-            os.path.join(BASE_DIR, "..", "Resources")
+            os.path.join(BASE_DIR, "..", "..", "Resources")
         )
 
         os.makedirs(RESOURCES_DIR, exist_ok=True)
@@ -36,13 +37,20 @@ def search():
         )
 
         download_gutenberg_txt(book_id, save_path)
+========
+        download_gutenberg_txt(book_id, f"../Resources/{book_name}_{book_id}.txt")
+>>>>>>>> ac495e67834536059d41fa5bd4eb788daee94b34:ASE-Book-System/Assets/Scripts/book.py
         success = True
 
     return jsonify({
         "name": book_name,
         "id": book_id,
         "success": success,
+<<<<<<<< HEAD:book.py
         "path": resource_key 
+========
+        "path": f"../Resources/{book_name}_{book_id}.txt"
+>>>>>>>> ac495e67834536059d41fa5bd4eb788daee94b34:ASE-Book-System/Assets/Scripts/book.py
     })
 
 
@@ -74,7 +82,7 @@ def download_gutenberg_txt(book_id, save_path):
     with open(save_path, "wb") as f:
         f.write(r.content)
 
-    print(f"Successfully downloaded!\n")
+    print(f"Successfully downloaded at:",save_path)
     return save_path
 
 app.run(port=5000)

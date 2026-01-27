@@ -1,0 +1,8 @@
+Testing Checklist Book Loading:
+- Downloads the book in <2s
+- Pagination in <100ms
+- Book Display doesn't block the environment (players can move around & interact with objects like normal)
+- Displays a book
+- Displays the requested book
+- Can display more than one book independently from the other books in scene
+- Supports annotation (Books can be drawn on and have a space for text entry)
