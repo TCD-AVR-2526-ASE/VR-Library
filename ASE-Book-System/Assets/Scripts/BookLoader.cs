@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System.IO;
 using NUnit.Framework;
@@ -110,10 +110,19 @@ public class BookLoader : MonoBehaviour
         ShowPage();
     }
 
-    void LoadText(string path)
+    string LoadText(string resourceName)
     {
-        content = File.ReadAllText(path);
+        TextAsset text = Resources.Load<TextAsset>(resourceName);
+
+        if (text == null)
+        {
+            Debug.LogError("Book not found in Resources: " + resourceName);
+            return null;
+        }
+
+        return text.text;
     }
+
 
     async Task<Book> GetBookFromLocalLibrary(string bookName)
     {

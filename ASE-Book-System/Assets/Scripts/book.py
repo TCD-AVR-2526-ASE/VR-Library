@@ -24,7 +24,7 @@ def search():
 
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         RESOURCES_DIR = os.path.abspath(
-            os.path.join(BASE_DIR, "..", "..", "Resources")
+            os.path.join(BASE_DIR, "..", "Resources")
         )
 
         os.makedirs(RESOURCES_DIR, exist_ok=True)

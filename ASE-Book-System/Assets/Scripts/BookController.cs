@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using echo17.EndlessBook;
 using UnityEngine.InputSystem;
 
@@ -10,7 +10,7 @@ public class BookController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.spaceKey.isPressed) {
+        if (Keyboard.current.enterKey.isPressed) {
             if (book.CurrentState == EndlessBook.StateEnum.ClosedFront)
             {
                 book.SetState(EndlessBook.StateEnum.OpenMiddle);
