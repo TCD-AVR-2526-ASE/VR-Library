@@ -36,14 +36,12 @@ public class BookLoader : MonoBehaviour
     public TMP_Text textAreaRight;
     public TMP_Text textAreaCover;
     public int maxCharPerPage = 500;
-    public TMP_InputField inputName;
     public BookSystem bookSystem;
 
     string content;
 
     public async void RequestBook(bool online)
     {
-        string bookName = inputName.text;
         Book book;
         content = "Loading...";
         Paginate();
@@ -53,6 +51,7 @@ public class BookLoader : MonoBehaviour
         textAreaRight.enableAutoSizing = false;
         ShowPage();
 
+        // move to book system
         if (online)
         {
             Debug.Log("Load from online library");
@@ -61,6 +60,8 @@ public class BookLoader : MonoBehaviour
             if (bookResponse.success)
             {
                 book = bookSystem.AddBook(bookResponse, 10f);
+                string text = LoadText(book.path);
+                await BookPaginator.ProcessBook(book, text);
             }
             else
             {
@@ -72,21 +73,17 @@ public class BookLoader : MonoBehaviour
         {
             Debug.Log("Load from local library");
             book = await GetBookFromLocalLibrary(bookName);
-            
         }
 
         // duplicate pagination because test of local DB as well
         // remove one set & throw the other into the book data struct.
         content = "Paginating...";
-        Paginate();
         textAreaLeft.fontSize = 10f;
         textAreaLeft.enableAutoSizing = false;
         textAreaRight.fontSize = 10f;
         textAreaRight.enableAutoSizing = false;
-        ShowPage();
 
         LoadText(book.path);
-        Paginate();
         textAreaLeft.fontSize = 10f;
         textAreaLeft.enableAutoSizing = false;
         textAreaRight.fontSize = 10f;
@@ -106,21 +103,14 @@ public class BookLoader : MonoBehaviour
         textAreaRight.text = pages.Item2 ?? "";
     }
 
-    void LoadText(string path)
+    string LoadText(string path)
     {
-        content = File.ReadAllText(path);
+        return File.ReadAllText(path);
     }
 
     async Task<Book> GetBookFromLocalLibrary(string bookName)
     {
         return await bookSystem.GetBookFromLocalLibrary(bookName);
-    }
-
-    async void Paginate()
-    {
-        pages = await BookPaginator.Paginate(content);
-        pageCount = pages.Count;
-        pageIndex = 0;
     }
 
     async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)

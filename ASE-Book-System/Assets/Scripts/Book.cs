@@ -15,11 +15,15 @@ public class Book : ScriptableObject
 
     private List<string> pages;
 
-    public void Init(string path, string name, float fontSize, int pageCount, List<string> paginatedText)
+    public void Init(string path, string name, float fontSize)
     {
         this.path = path;
         this.fontSize = fontSize;
         title = name;
+    }
+
+    public void Paginate(int pageCount, List<string> paginatedText)
+    {
         totalPages = pageCount;
         pages = paginatedText;
     }

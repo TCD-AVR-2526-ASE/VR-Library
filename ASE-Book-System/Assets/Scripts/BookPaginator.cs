@@ -12,6 +12,11 @@ public class BookPaginator : MonoBehaviour
     // chars per visualline
     public static int MaxCharsPerLine = 60;
 
+    public static async Task ProcessBook(Book book, string text)
+    {
+        List<string> pages = await Paginate(text);
+        book.Paginate(pages.Count, pages);
+    }
     public static Task<List<string>> Paginate(string text)
     {
         return Task.Run(() =>
