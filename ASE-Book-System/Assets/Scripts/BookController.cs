@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 
 public class BookController : MonoBehaviour
 {
-    public EndlessBook book;
+    private EndlessBook book;
+    private Book bookData;
+
     public BookLoader bookLoader;
 
     // Update is called once per frame
@@ -28,6 +30,7 @@ public class BookController : MonoBehaviour
         }
         else if (Keyboard.current.eKey.wasPressedThisFrame)
         {
+            bookData.TurnPage();
             bookLoader.NextPage();
         }
     }
