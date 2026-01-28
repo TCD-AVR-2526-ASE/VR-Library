@@ -1,44 +1,27 @@
-﻿using UnityEngine;
-using TMPro;
-using System.IO;
-using NUnit.Framework;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using System.Text;
-using UnityEngine.Networking;
-using System.Collections;
-using System.Threading.Tasks;
 using System;
-using echo17.EndlessBook;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
+using Random = UnityEngine.Random;
 
-[System.Serializable]
-public class BookResponse
+public class BookRepositry : MonoBehaviour
 {
-    public string name;
-    public string id;
-    public bool success;
-    public string path;
-}
+    // Start is called once before the first execution of U
+    // pdate after the MonoBehaviour is created
 
-public static class UnityWebRequestExtension
-{
-    public static Task ToTask(this UnityWebRequestAsyncOperation op)
+    private Dictionary<string, Book> books;
+    private List<string> bookNames;
+    private List<int> bookIds;
+
+    private int bookCount => bookIds.Count; 
+    private const int MAX_CAPACITY = 100;
+
+    public void LoadBoook(Tuple<string, bool> BooklRequest)
     {
-        var tcs = new TaskCompletionSource<object>();
-        op.completed += _ => tcs.SetResult(null);
-        return tcs.Task;
+
     }
-}
-
-public class BookLoader : MonoBehaviour
-{
-    public TMP_Text textAreaLeft;
-    public TMP_Text textAreaRight;
-    public TMP_Text textAreaCover;
-    public int maxCharPerPage = 500;
-    public BookSystem bookSystem;
-
-    string content;
 
     public async void RequestBook(bool online)
     {
@@ -55,7 +38,7 @@ public class BookLoader : MonoBehaviour
         if (online)
         {
             Debug.Log("Load from online library");
-            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookName);
+            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookNames);
 
             if (bookResponse.success)
             {
@@ -72,7 +55,7 @@ public class BookLoader : MonoBehaviour
         else
         {
             Debug.Log("Load from local library");
-            book = await GetBookFromLocalLibrary(bookName);
+            book = await GetBookFromLocalLibrary(bookNames);
         }
 
         // duplicate pagination because test of local DB as well
@@ -94,23 +77,44 @@ public class BookLoader : MonoBehaviour
         ShowPage();
     }
 
-
-    public void DisplayNewPage(Book book)
+    Book GetBookFromLocalLibrary(string bookName)
     {
-        Tuple<string, string> pages = book.GetPageText();
-        if (pages == null) return;
-        textAreaLeft.text = pages.Item1;
-        textAreaRight.text = pages.Item2 ?? "";
+        int id = books[bookName].id;
+
+        if (bookIds.Contains(id))
+        {
+            return books[bookNames[bookIds.IndexOf(id)]];
+        }
+
+        return null;
     }
 
-    string LoadText(string path)
+    public Book AddBook(BookResponse bookResponse, float fontSize = .1f)
     {
-        return File.ReadAllText(path);
-    }
+        if (bookCount >= MAX_CAPACITY)
+        {
+            // A random book to be removed
+            int idx = Random.Range(0, MAX_CAPACITY);
 
-    async Task<Book> GetBookFromLocalLibrary(string bookName)
-    {
-        return await bookSystem.GetBookFromLocalLibrary(bookName);
+            string key = bookNames[idx];
+
+            books.Remove(key);
+
+            bookNames[idx] = bookNames[MAX_CAPACITY - 1];
+            bookNames.RemoveAt(MAX_CAPACITY - 1);
+
+            bookIds[idx] = bookIds[MAX_CAPACITY - 1];
+            bookIds.RemoveAt(MAX_CAPACITY - 1);
+        }
+
+        string normalizedName = bookResponse.name.ToLower();
+        bookNames.Add(normalizedName);
+        bookIds.Add(bookResponse.id);
+        Book book = ScriptableObject.CreateInstance<Book>();
+        book.Init(bookResponse.path, bookResponse.name, fontSize);
+        books.Add(normalizedName, book);
+
+        return books[normalizedName];
     }
 
     async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)
@@ -135,5 +139,10 @@ public class BookLoader : MonoBehaviour
         }
 
         return null;
+    }
+
+    string LoadText(string path)
+    {
+        return File.ReadAllText(path);
     }
 }

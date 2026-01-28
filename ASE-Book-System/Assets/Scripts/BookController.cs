@@ -7,7 +7,7 @@ public class BookController : MonoBehaviour
     private EndlessBook book;
     private Book bookData;
 
-    public BookLoader bookLoader;
+    public BookRepositry bookLoader;
 
     // Update is called once per frame
     void Update()

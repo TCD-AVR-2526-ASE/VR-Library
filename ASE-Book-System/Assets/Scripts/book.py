@@ -33,7 +33,14 @@ def find_book(name):
     r = response.json()
 
     if r["results"]:
-        return r["results"][0]["id"], r["results"][0]["title"]
+        id = r["results"][0]["id"]
+
+        try:
+            id = int(id)
+        except ValueError:
+            id = -1
+
+        return id, r["results"][0]["title"]
     
     return None
 
