@@ -16,6 +16,7 @@ public class BookSystem : MonoBehaviour
     {
         string normalizedName = bookName.ToLower();
         string target = MatchName(normalizedName);
+        Debug.Log(bookName);
 
         if(books.ContainsKey(target))
             return Task.FromResult(books[target]);
@@ -75,7 +76,7 @@ public class BookSystem : MonoBehaviour
         {
             BookResponse response = new BookResponse();
             response.name = file.name.Split('_')[0];
-            response.path = file.name; // IMPORTANT
+            response.path = file.name;
             response.success = true;
 
             AddBook(response);

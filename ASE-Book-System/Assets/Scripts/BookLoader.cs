@@ -119,7 +119,6 @@ public class BookLoader : MonoBehaviour
             Debug.LogError("Book not found in Resources: " + resourceName);
             return null;
         }
-
         return text.text;
     }
 
