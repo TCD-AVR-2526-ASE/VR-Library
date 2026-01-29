@@ -8,11 +8,11 @@ public class BookRequestUI : MonoBehaviour
     public TMP_InputField inputName;
     public BookSystem bookSystem;
 
-    public void SendBookRequest(bool online)
+    public void SendBookRequest()
     {
         string bookName = inputName.text;
+        Debug.Log("BookRequestUI::SendBookRequest");  
         // send request to book system with bookName & online
-        Tuple<string, bool> bookRequest = new (bookName, online);
-        bookSystem.AddBookRequest(bookRequest);
+        bookSystem.AddBookRequest(bookName);
     }
 }

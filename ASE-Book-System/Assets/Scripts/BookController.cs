@@ -5,13 +5,14 @@ using UnityEngine.InputSystem;
 public class BookController : MonoBehaviour
 {
     private EndlessBook book;
-    private Book bookData;
+    public Book bookData;
 
-    public BookRepositry bookLoader;
+    public BookRenderer bookRenderer;
 
     // Update is called once per frame
     void Update()
     {
+        if (bookData == null || book == null) return;
         if (Keyboard.current.spaceKey.isPressed) {
             if (book.CurrentState == EndlessBook.StateEnum.ClosedFront)
             {
@@ -26,12 +27,13 @@ public class BookController : MonoBehaviour
         }
         else if (Keyboard.current.qKey.wasPressedThisFrame)
         {
-            bookLoader.PrevPage();
+            bookData.TurnPage(false);
+            bookRenderer.DisplayCurrent(bookData);
         }
         else if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            bookData.TurnPage();
-            bookLoader.NextPage();
+            bookData.TurnPage(true);
+            bookRenderer.DisplayCurrent(bookData);
         }
     }
 }

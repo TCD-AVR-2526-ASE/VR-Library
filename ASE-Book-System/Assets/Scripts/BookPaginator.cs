@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Android;
 using System.Threading.Tasks;
 using System;
+using System.IO;
 
 public class BookPaginator : MonoBehaviour
 {
@@ -12,12 +13,14 @@ public class BookPaginator : MonoBehaviour
     // chars per visualline
     public static int MaxCharsPerLine = 60;
 
-    public static async Task ProcessBook(Book book, string text)
+    public static async Task ProcessBook(Book book)
     {
+        Debug.Log("BookPaginator::ProcessBook");
+        string text = LoadText(book.path);
         List<string> pages = await Paginate(text);
         book.Paginate(pages.Count, pages);
     }
-    public static Task<List<string>> Paginate(string text)
+    private static Task<List<string>> Paginate(string text)
     {
         return Task.Run(() =>
         {
@@ -85,6 +88,11 @@ public class BookPaginator : MonoBehaviour
 
             return pages;
         });
+    }
+
+    static string LoadText(string path)
+    {
+        return File.ReadAllText(path);
     }
 
     private static bool IsNiceBreakChar(char c)

@@ -11,25 +11,6 @@ using System.Threading.Tasks;
 using System;
 using echo17.EndlessBook;
 
-[System.Serializable]
-public class BookResponse
-{
-    public string name;
-    public int id;
-    public bool success;
-    public string path;
-}
-
-public static class UnityWebRequestExtension
-{
-    public static Task ToTask(this UnityWebRequestAsyncOperation op)
-    {
-        var tcs = new TaskCompletionSource<object>();
-        op.completed += _ => tcs.SetResult(null);
-        return tcs.Task;
-    }
-}
-
 public class BookRenderer : MonoBehaviour
 {
     public TMP_Text textAreaLeft;
@@ -37,14 +18,52 @@ public class BookRenderer : MonoBehaviour
     public TMP_Text textAreaCover;
     public int maxCharPerPage = 500;
     public BookSystem bookSystem;
+    public float titleFontSize = 20;
 
     string content;
 
-    public void DisplayNewPage(Book book)
+    public void DisplayCurrent(Book book)
     {
         Tuple<string, string> pages = book.GetPageText();
         if (pages == null) return;
         textAreaLeft.text = pages.Item1;
+        bool hasPage = pages.Item2 != null;
         textAreaRight.text = pages.Item2 ?? "";
+
+        textAreaLeft.fontSize = book.fontSize;
+        textAreaLeft.enableAutoSizing = false;
+        textAreaRight.fontSize = book.fontSize;
+        textAreaRight.enableAutoSizing = false;
+        textAreaCover.fontSize = titleFontSize;
+        textAreaCover.enableAutoSizing = false;
+        textAreaCover.text = book.title;
     }
+
+    //content = "Loading...";
+    //Paginate();
+    //textAreaLeft.fontSize = 10f;
+    //textAreaLeft.enableAutoSizing = false;
+    //textAreaRight.fontSize = 10f;
+    //textAreaRight.enableAutoSizing = false;
+    //ShowPage();
+
+    // move to book system
+
+    // duplicate pagination because test of local DB as well
+    // remove one set & throw the other into the book data struct.
+    //content = "Paginating...";
+    //textAreaLeft.fontSize = 10f;
+    //textAreaLeft.enableAutoSizing = false;
+    //textAreaRight.fontSize = 10f;
+    //textAreaRight.enableAutoSizing = false;
+
+    //LoadText(book.path);
+    //textAreaLeft.fontSize = 10f;
+    //textAreaLeft.enableAutoSizing = false;
+    //textAreaRight.fontSize = 10f;
+    //textAreaRight.enableAutoSizing = false;
+    //textAreaCover.fontSize = 20f;
+    //textAreaCover.enableAutoSizing = false;
+    //textAreaCover.text = book.title;
+    //ShowPage();
 }

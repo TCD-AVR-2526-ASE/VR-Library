@@ -9,7 +9,7 @@ public class Book : ScriptableObject
 {
     public string path { get; private set; } = null;
     public int id { get; private set; } = -1;
-    public float fontSize { get; private set; } = .1f;
+    public float fontSize { get; private set; } = 10f;
     public string title { get; private set; } = "";
     public int activePage {get; protected set;} = 0;
     public int totalPages { get; protected set; } = 0;

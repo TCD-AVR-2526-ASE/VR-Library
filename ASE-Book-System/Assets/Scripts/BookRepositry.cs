@@ -1,10 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
+using System.Linq;
+
+
+[System.Serializable]
+public class BookResponse
+{
+    public string name;
+    public int id;
+    public bool success;
+    public string path;
+}
+
+public static class UnityWebRequestExtension
+{
+    public static Task ToTask(this UnityWebRequestAsyncOperation op)
+    {
+        var tcs = new TaskCompletionSource<object>();
+        op.completed += _ => tcs.SetResult(null);
+        return tcs.Task;
+    }
+}
 
 public class BookRepositry : MonoBehaviour
 {
@@ -12,104 +35,62 @@ public class BookRepositry : MonoBehaviour
     // pdate after the MonoBehaviour is created
 
     private Dictionary<string, Book> books;
-    private List<string> bookNames;
-    private List<int> bookIds;
 
-    private int bookCount => bookIds.Count; 
+    private string savePath = "./Assets/Resources/";
+
+    private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
 
-    public void LoadBoook(Tuple<string, bool> BooklRequest)
+    public async Task<Book> RequestBook(string bookName)
     {
-
-    }
-
-    public async void RequestBook(bool online)
-    {
+        Debug.Log("BookRepositry::RequestBook");
         Book book;
-        content = "Loading...";
-        Paginate();
-        textAreaLeft.fontSize = 10f;
-        textAreaLeft.enableAutoSizing = false;
-        textAreaRight.fontSize = 10f;
-        textAreaRight.enableAutoSizing = false;
-        ShowPage();
 
-        // move to book system
-        if (online)
+        book = GetBookFromLocalLibrary(bookName);
+
+        if (book == null)
         {
             Debug.Log("Load from online library");
-            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookNames);
+            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookName);
 
             if (bookResponse.success)
             {
-                book = bookSystem.AddBook(bookResponse, 10f);
-                string text = LoadText(book.path);
-                await BookPaginator.ProcessBook(book, text);
+                book = AddBook(bookResponse, 10f);
+                await BookPaginator.ProcessBook(book);
             }
             else
             {
-                content = "Failed to get book";
-                return;
+                return null;
             }
         }
-        else
-        {
-            Debug.Log("Load from local library");
-            book = await GetBookFromLocalLibrary(bookNames);
-        }
 
-        // duplicate pagination because test of local DB as well
-        // remove one set & throw the other into the book data struct.
-        content = "Paginating...";
-        textAreaLeft.fontSize = 10f;
-        textAreaLeft.enableAutoSizing = false;
-        textAreaRight.fontSize = 10f;
-        textAreaRight.enableAutoSizing = false;
-
-        LoadText(book.path);
-        textAreaLeft.fontSize = 10f;
-        textAreaLeft.enableAutoSizing = false;
-        textAreaRight.fontSize = 10f;
-        textAreaRight.enableAutoSizing = false;
-        textAreaCover.fontSize = 20f;
-        textAreaCover.enableAutoSizing = false;
-        textAreaCover.text = book.title;
-        ShowPage();
+        return book;
     }
 
     Book GetBookFromLocalLibrary(string bookName)
     {
-        int id = books[bookName].id;
-
-        if (bookIds.Contains(id))
-        {
-            return books[bookNames[bookIds.IndexOf(id)]];
-        }
-
-        return null;
+        Debug.Log("BookRepositry::GetBookFromLocalLibrary");
+        Book book;
+        //MatchName(bookName);
+        return books.TryGetValue(bookName, out book) ? book : null;
     }
 
-    public Book AddBook(BookResponse bookResponse, float fontSize = .1f)
+    private Book AddBook(BookResponse bookResponse, float fontSize = .1f)
     {
+        Debug.Log("BookRepositry::AddBook");
         if (bookCount >= MAX_CAPACITY)
         {
+            List<string> bookNames = books.Keys.ToList();
+
             // A random book to be removed
             int idx = Random.Range(0, MAX_CAPACITY);
 
             string key = bookNames[idx];
 
             books.Remove(key);
-
-            bookNames[idx] = bookNames[MAX_CAPACITY - 1];
-            bookNames.RemoveAt(MAX_CAPACITY - 1);
-
-            bookIds[idx] = bookIds[MAX_CAPACITY - 1];
-            bookIds.RemoveAt(MAX_CAPACITY - 1);
         }
 
         string normalizedName = bookResponse.name.ToLower();
-        bookNames.Add(normalizedName);
-        bookIds.Add(bookResponse.id);
         Book book = ScriptableObject.CreateInstance<Book>();
         book.Init(bookResponse.path, bookResponse.name, fontSize);
         books.Add(normalizedName, book);
@@ -119,6 +100,7 @@ public class BookRepositry : MonoBehaviour
 
     async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)
     {
+        Debug.Log("BookRepositry::GetBookFromOnlinelLibrary");
         string url = "http://127.0.0.1:5000/search";
 
         string json = "{\"name\": \"" + bookName + "\"}";
@@ -141,8 +123,63 @@ public class BookRepositry : MonoBehaviour
         return null;
     }
 
-    string LoadText(string path)
+    private void Awake()
     {
-        return File.ReadAllText(path);
+        books = new Dictionary<string, Book>(MAX_CAPACITY);
+
+        Debug.Log("Awake: " + savePath);
+
+        string[] files = Directory.GetFiles(savePath, "*.txt");
+
+        foreach (string file in files)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(file);
+
+            BookResponse response = new BookResponse();
+            response.name = fileName.Split('_')[0];
+            response.path = file;
+            response.success = true;
+
+            AddBook(response);
+        }
+    }
+
+    string MatchName(string name)
+    {
+        Debug.Log("BookRepositry::MatchName");
+        int minDist = int.MaxValue;
+        string target = null;
+        if (books.Count == 0) return null;
+
+        foreach (string bookName in books.Keys.ToList())
+        {
+            int[,] dp = new int[name.Length + 1, bookName.Length + 1];
+
+            for (int i = 0; i <= name.Length; i++) dp[i, 0] = i;
+            for (int j = 0; j <= bookName.Length; j++) dp[0, j] = j;
+
+            for (int i = 1; i <= name.Length; i++)
+            {
+                for (int j = 1; j <= bookName.Length; j++)
+                {
+                    int cost = name[i - 1] == bookName[j - 1] ? 0 : 1;
+
+                    dp[i, j] = Mathf.Min(
+                        dp[i - 1, j] + 1,
+                        dp[i, j - 1] + 1,
+                        dp[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            int dist = dp[name.Length, bookName.Length];
+            if (minDist > dist)
+            {
+                minDist = dist;
+                target = bookName;
+            }
+        }
+
+        return target;
     }
 }
