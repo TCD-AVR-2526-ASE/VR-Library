@@ -98,7 +98,7 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
     }
 
     @Override
-    public UmsAdmin register(MultipartFile icon, UmsAdminDTO umsAdminParam) {
+    public UmsAdmin register(UmsAdminDTO umsAdminParam) {
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
         umsAdmin.setStatus(1);
@@ -108,11 +108,6 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         Long iCount = this.baseMapper.selectCount(lambda);
         if (iCount > 0) {
             throw new RuntimeException("Username already exists!");
-        }
-        // Save avatar to MinIO
-        if (icon != null && !icon.isEmpty()) {
-            String minioFilePath = minioService.upload(icon, BucketEnums.ADMIN.getName());
-            umsAdmin.setIcon(minioFilePath);
         }
         // Encrypt the password
         String encodePassword = BCrypt.hashpw(umsAdmin.getPassword());

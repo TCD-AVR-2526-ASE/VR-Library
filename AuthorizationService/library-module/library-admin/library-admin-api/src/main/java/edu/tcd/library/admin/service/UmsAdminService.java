@@ -47,11 +47,10 @@ public interface UmsAdminService extends IService<UmsAdmin> {
     /**
      * User registration
      *
-     * @param icon  Avatar file stream
      * @param param User registration information
      * @return The registered UmsAdmin entity
      */
-    UmsAdmin register(MultipartFile icon, UmsAdminDTO param);
+    UmsAdmin register(UmsAdminDTO param);
 
     /**
      * Update user information

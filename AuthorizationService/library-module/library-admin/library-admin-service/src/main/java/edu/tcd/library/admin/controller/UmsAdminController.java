@@ -31,15 +31,6 @@ public class UmsAdminController {
         this.adminService = adminService;
     }
 
-
-    @Operation(summary = "user register")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public CommonResult<UmsAdmin> register(@RequestPart(value = "icon", required = false) MultipartFile icon,
-                                           @Validated UmsAdminDTO umsAdminParam) {
-        UmsAdmin umsAdmin = adminService.register(icon, umsAdminParam);
-        return CommonResult.judge(umsAdmin != null, umsAdmin, "用户注册失败！");
-    }
-
     @Operation(summary = "delete user")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public CommonResult<Boolean> delete(@PathVariable Long id) {

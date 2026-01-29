@@ -1,6 +1,7 @@
 package edu.tcd.library.config;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotRoleException;
 import edu.tcd.library.common.core.api.CommonResult;
 import edu.tcd.library.common.core.exceptions.ErrorCodeException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import static edu.tcd.library.common.core.constants.MessageConstant.NOT_LOGIN;
+import static edu.tcd.library.common.core.constants.MessageConstant.ROLE_FAILED;
 
 @Slf4j
 @ControllerAdvice
@@ -80,6 +82,17 @@ public class GlobalExceptionHandler {
     public CommonResult<String> handleNotLoginException(NotLoginException ex) {
         log.error(ex.getMessage());
         return CommonResult.validateFailed(NOT_LOGIN);
+    }
+
+
+    /**
+     * Role Not Correct Exception
+     */
+    @ResponseBody
+    @ExceptionHandler(value = NotRoleException.class)
+    public CommonResult<String> handleNotRoleException(NotRoleException ex) {
+        log.error("role not correct:" + ex.getRole());
+        return CommonResult.validateFailed(ROLE_FAILED);
     }
 
 

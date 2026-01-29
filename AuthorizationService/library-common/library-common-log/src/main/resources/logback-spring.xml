@@ -136,7 +136,7 @@
         </connectionStrategy>
     </appender>
 
-    <logger name="edu.tcd.survey.common.logs.RequestLogAspect" level="INFO">
+    <logger name="edu.tcd.library.common.logs.aspects.RequestLogAspect" level="INFO">
         <appender-ref ref="LOG_STASH_REQUEST"/>
     </logger>
 

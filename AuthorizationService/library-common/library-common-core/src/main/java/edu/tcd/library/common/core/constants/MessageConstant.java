@@ -11,6 +11,8 @@ public class MessageConstant {
 
     public static final String NOT_LOGIN = "User not logged in!";
 
+    public static final String ROLE_FAILED = "Role Not Correct, No Access to the service!";
+
     public static final String CREDENTIALS_EXPIRED = "Login credentials have expired. Please log in again!";
 
     public static final String ACCOUNT_DISABLED = "Account is disabled. Please contact the administrator!";

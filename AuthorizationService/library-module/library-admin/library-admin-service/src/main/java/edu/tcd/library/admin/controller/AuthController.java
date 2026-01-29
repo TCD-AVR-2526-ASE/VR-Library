@@ -1,7 +1,9 @@
 package edu.tcd.library.admin.controller;
 
 
+import edu.tcd.library.admin.dto.UmsAdminDTO;
 import edu.tcd.library.admin.dto.UmsAdminLoginDTO;
+import edu.tcd.library.admin.entity.UmsAdmin;
 import edu.tcd.library.admin.service.UmsAdminService;
 import edu.tcd.library.admin.vo.CurrentUserVO;
 import edu.tcd.library.admin.vo.Oauth2TokenVO;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "auth management")
@@ -41,6 +44,14 @@ public class AuthController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public CommonResult<CurrentUserVO> getAdminInfo() {
         return CommonResult.success(adminService.getAdminInfo());
+    }
+
+
+    @Operation(summary = "user register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdminDTO umsAdminParam) {
+        UmsAdmin umsAdmin = adminService.register(umsAdminParam);
+        return CommonResult.judge(umsAdmin != null, umsAdmin, "register failed！");
     }
 
 }

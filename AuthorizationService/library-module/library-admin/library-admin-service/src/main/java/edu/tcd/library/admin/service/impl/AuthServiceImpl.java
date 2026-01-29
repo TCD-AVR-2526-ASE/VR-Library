@@ -10,6 +10,7 @@ import edu.tcd.library.admin.vo.Oauth2TokenVO;
 import edu.tcd.library.admin.service.AuthService;
 import edu.tcd.library.common.core.api.CommonResult;
 import edu.tcd.library.common.core.domain.UserDto;
+import edu.tcd.library.common.core.exceptions.AuthenticationFailException;
 import edu.tcd.library.common.security.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
         if (BCrypt.checkpw(password, dto.getPassword())) {
             StpUtil.login(dto.getId());
             SecurityUtils.setUserCache(dto);
+        } else {
+            throw new AuthenticationFailException("Invalid password!");
         }
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         String refreshToken = SaTempUtil.createToken(dto.getId(), REFRESH_TOKEN_EXPIRE);

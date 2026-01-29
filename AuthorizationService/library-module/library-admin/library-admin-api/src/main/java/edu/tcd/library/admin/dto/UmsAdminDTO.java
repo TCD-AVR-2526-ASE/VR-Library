@@ -22,19 +22,19 @@ public class UmsAdminDTO {
     @NotEmpty
     private String password;
 
-    @Schema(description = "Email address")
-    @Email
-    private String email;
-
-    @Schema(description = "User nickname")
-    private String nickName;
-
-    @Schema(description = "Remarks or notes")
-    private String note;
-
-    @Schema(description = "Identity card number")
-    private String idCard;
-
-    @Schema(description = "Sort order index")
-    private Integer sort;
+//    @Schema(description = "Email address")
+//    @Email
+//    private String email;
+//
+//    @Schema(description = "User nickname")
+//    private String nickName;
+//
+//    @Schema(description = "Remarks or notes")
+//    private String note;
+//
+//    @Schema(description = "Identity card number")
+//    private String idCard;
+//
+//    @Schema(description = "Sort order index")
+//    private Integer sort;
 }
