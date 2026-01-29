@@ -1,51 +1,30 @@
-﻿using UnityEngine;
-using TMPro;
-using System.IO;
-using NUnit.Framework;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using System.Text;
-using UnityEngine.Networking;
-using System.Collections;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
+using Random = UnityEngine.Random;
 
-[System.Serializable]
-public class BookResponse
+public class BookRepositry : MonoBehaviour
 {
-    public string name;
-    public string id;
-    public bool success;
-    public string path;
-}
+    // Start is called once before the first execution of U
+    // pdate after the MonoBehaviour is created
 
-public static class UnityWebRequestExtension
-{
-    public static Task ToTask(this UnityWebRequestAsyncOperation op)
+    private Dictionary<string, Book> books;
+    private List<string> bookNames;
+    private List<int> bookIds;
+
+    private int bookCount => bookIds.Count; 
+    private const int MAX_CAPACITY = 100;
+
+    public void LoadBoook(Tuple<string, bool> BooklRequest)
     {
-        var tcs = new TaskCompletionSource<object>();
-        op.completed += _ => tcs.SetResult(null);
-        return tcs.Task;
+
     }
-}
-
-public class BookLoader : MonoBehaviour
-{
-    public TMP_Text textAreaLeft;
-    public TMP_Text textAreaRight;
-    public TMP_Text textAreaCover;
-    public int maxCharPerPage = 500;
-    public TMP_InputField inputName;
-    public BookSystem bookSystem;
-
-    private List<string> pages;
-    private int pageIndex = 0;
-    private int pageCount = 0;
-    string content;
 
     public async void RequestBook(bool online)
     {
-        string bookName = inputName.text;
         Book book;
         content = "Loading...";
         Paginate();
@@ -55,14 +34,17 @@ public class BookLoader : MonoBehaviour
         textAreaRight.enableAutoSizing = false;
         ShowPage();
 
+        // move to book system
         if (online)
         {
             Debug.Log("Load from online library");
-            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookName);
+            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookNames);
 
             if (bookResponse.success)
             {
                 book = bookSystem.AddBook(bookResponse, 10f);
+                string text = LoadText(book.path);
+                await BookPaginator.ProcessBook(book, text);
             }
             else
             {
@@ -73,20 +55,18 @@ public class BookLoader : MonoBehaviour
         else
         {
             Debug.Log("Load from local library");
-            book = await GetBookFromLocalLibrary(bookName);
-            
+            book = await GetBookFromLocalLibrary(bookNames);
         }
 
+        // duplicate pagination because test of local DB as well
+        // remove one set & throw the other into the book data struct.
         content = "Paginating...";
-        Paginate();
         textAreaLeft.fontSize = 10f;
         textAreaLeft.enableAutoSizing = false;
         textAreaRight.fontSize = 10f;
         textAreaRight.enableAutoSizing = false;
-        ShowPage();
 
         LoadText(book.path);
-        Paginate();
         textAreaLeft.fontSize = 10f;
         textAreaLeft.enableAutoSizing = false;
         textAreaRight.fontSize = 10f;
@@ -97,49 +77,44 @@ public class BookLoader : MonoBehaviour
         ShowPage();
     }
 
-
-    public void NextPage()
+    Book GetBookFromLocalLibrary(string bookName)
     {
-        pageIndex = pageIndex < pageCount - 2 ? pageIndex + 2 : pageIndex;
-        ShowPage();
-    }
+        int id = books[bookName].id;
 
-    public void PrevPage()
-    {
-        pageIndex = pageIndex > 0 ? pageIndex - 2 : pageIndex;
-        ShowPage();
-    }
-
-    string LoadText(string resourceName)
-    {
-        TextAsset text = Resources.Load<TextAsset>(resourceName);
-
-        if (text == null)
+        if (bookIds.Contains(id))
         {
-            Debug.LogError("Book not found in Resources: " + resourceName);
-            return null;
+            return books[bookNames[bookIds.IndexOf(id)]];
         }
-        return text.text;
+
+        return null;
     }
 
-
-    async Task<Book> GetBookFromLocalLibrary(string bookName)
+    public Book AddBook(BookResponse bookResponse, float fontSize = .1f)
     {
-        return await bookSystem.GetBookFromLocalLibrary(bookName);
-    }
+        if (bookCount >= MAX_CAPACITY)
+        {
+            // A random book to be removed
+            int idx = Random.Range(0, MAX_CAPACITY);
 
-    async void Paginate()
-    {
-        pages = await BookPaginator.Paginate(content);
-        pageCount = pages.Count;
-        pageIndex = 0;
-    }
+            string key = bookNames[idx];
 
-    void ShowPage()
-    {
-        if (pages == null) return;
-        textAreaLeft.text = pages[pageIndex];
-        textAreaRight.text = pageIndex + 1 >= pageCount ? "" : pages[pageIndex + 1];
+            books.Remove(key);
+
+            bookNames[idx] = bookNames[MAX_CAPACITY - 1];
+            bookNames.RemoveAt(MAX_CAPACITY - 1);
+
+            bookIds[idx] = bookIds[MAX_CAPACITY - 1];
+            bookIds.RemoveAt(MAX_CAPACITY - 1);
+        }
+
+        string normalizedName = bookResponse.name.ToLower();
+        bookNames.Add(normalizedName);
+        bookIds.Add(bookResponse.id);
+        Book book = ScriptableObject.CreateInstance<Book>();
+        book.Init(bookResponse.path, bookResponse.name, fontSize);
+        books.Add(normalizedName, book);
+
+        return books[normalizedName];
     }
 
     async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)
@@ -164,5 +139,10 @@ public class BookLoader : MonoBehaviour
         }
 
         return null;
+    }
+
+    string LoadText(string path)
+    {
+        return File.ReadAllText(path);
     }
 }

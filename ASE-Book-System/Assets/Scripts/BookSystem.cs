@@ -1,67 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
+using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
 
 public class BookSystem : MonoBehaviour
 {
     public int bookSum = 100;
-    private string savePath = "../Assets/Resources/";
+    private string savePath = "Assets\\Resources\\";
     private int bookCount = 0;
-    private Dictionary<string, Book> books;
-    private List<string> bookKeys;
-    private List<string> bookIds;
+    private Queue<Tuple<string, bool>> requestQueue;
+    private int MAX_REQUEST = 30;
+    BookRepositry bookLoader;
+
+    private async Task Update()
+    {
+        if (requestQueue.Count == 0) return;
+        int i = MAX_REQUEST;
+
+        while (i > 0 && requestQueue.Count > 0) {
+            Tuple<string, bool> bookRequest = requestQueue.Dequeue();
+            if (bookRequest.Item2)
+            {
+                
+            }
+            else { 
+
+            }
+            i--;
+        }
+    }
+
+    public void AddBookRequest(Tuple<string, bool> bookRequest)
+    {
+        requestQueue.Enqueue(bookRequest);
+    }
 
     public Task<Book> GetBookFromLocalLibrary(string bookName)
     {
-        string normalizedName = bookName.ToLower();
-        string target = MatchName(normalizedName);
-        Debug.Log(bookName);
-
-        if(books.ContainsKey(target))
-            return Task.FromResult(books[target]);
-
-        return null;
+        
     }
 
     public Book GetBookFromLocalLibrary(int bookId)
     {
-        string id = bookId.ToString();
-
-        if(bookIds.Contains(id))
-            return books[bookKeys[bookIds.IndexOf(id)]];
-
-        return null;
-    }
-
-    public Book AddBook(BookResponse bookResponse, float fontSize = .1f)
-    {
-        if(bookCount >= bookSum)
-        {
-            int idx = Random.Range(0, bookSum);
-
-            string key = bookKeys[idx];
-
-            books.Remove(key);
-
-            bookKeys[idx] = bookKeys[bookSum - 1];
-            bookKeys.RemoveAt(bookSum - 1);
-
-            bookIds[idx] = bookIds[bookSum - 1];
-            bookIds.RemoveAt(bookSum - 1);
-
-            bookCount--;
-        }
-
-        string normalizedName = bookResponse.name.ToLower();
-        bookKeys.Add(normalizedName);
-        bookIds.Add(bookResponse.id);
-        Book book = ScriptableObject.CreateInstance<Book>();
-        book.Init(bookResponse.path, bookResponse.name, fontSize);
-        books.Add(normalizedName, book);
-        bookCount++;
-
-        return books[normalizedName];
+       
     }
 
     private void Awake()
@@ -70,13 +54,17 @@ public class BookSystem : MonoBehaviour
         bookKeys = new List<string>(bookSum);
         bookIds = new List<string>(bookSum);
 
-        TextAsset[] files = Resources.LoadAll<TextAsset>("");
+        Debug.Log("Awake: "+savePath);
 
-        foreach (TextAsset file in files)
+        string[] files = Directory.GetFiles(savePath, "*.txt");
+
+        foreach (string file in files)
         {
+            string fileName = Path.GetFileNameWithoutExtension(file);
+
             BookResponse response = new BookResponse();
-            response.name = file.name.Split('_')[0];
-            response.path = file.name;
+            response.name = fileName.Split('_')[0];
+            response.path = file;
             response.success = true;
 
             AddBook(response);
