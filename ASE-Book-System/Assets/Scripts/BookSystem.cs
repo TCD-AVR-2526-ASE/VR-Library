@@ -10,7 +10,7 @@ public class BookSystem : MonoBehaviour
 {
     
     private Queue<string> requestQueue;
-    private int MAX_REQUEST = 30;
+    private readonly int MAX_REQUEST = 30;
     private BookRepositry bookRepo;
     public BookController bookController;
 
@@ -18,6 +18,7 @@ public class BookSystem : MonoBehaviour
     {
         Debug.Log("BookSystem::Update");
         if (requestQueue.Count == 0) return;
+
         int i = MAX_REQUEST;
         Debug.Log("Enter BookSystem::::Update::whileLoop");
         while (i > 0 && requestQueue.Count > 0) {
@@ -37,7 +38,7 @@ public class BookSystem : MonoBehaviour
 
     private Book GetBookFromRepositry(string bookName)
     {
-        Debug.Log("BookSystem::GetBookFromRepoditry");
+        Debug.Log("BookSystem::GetBookFromRepositry");
         return bookRepo.RequestBook(bookName).Result;
     }
 

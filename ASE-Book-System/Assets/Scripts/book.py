@@ -14,18 +14,26 @@ def safe_filename(name):
 def search():
     data = request.get_json()
     name = data.get("name")
-
-    book_id, book_name = find_book(name)
+    
     success = False
+    try:
+        book_id, book_name = find_book(name)
+    except TypeError as e:
+        print(f"[ERROR] {e}")
+        return jsonify({
+            "name": "book_not_found",
+            "id": -1,
+            "success": success,
+            "path": "invalid_path"
+        })
     resource_key = None
 
     if book_id:
-<<<<<<<< HEAD:book.py
         safe_name = safe_filename(book_name)
 
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         RESOURCES_DIR = os.path.abspath(
-            os.path.join(BASE_DIR, "..", "..", "Resources")
+            os.path.join(BASE_DIR, "..", "..", "Assets\Resources")
         )
 
         os.makedirs(RESOURCES_DIR, exist_ok=True)
@@ -37,20 +45,14 @@ def search():
         )
 
         download_gutenberg_txt(book_id, save_path)
-========
-        download_gutenberg_txt(book_id, f"../Resources/{book_name}_{book_id}.txt")
->>>>>>>> ac495e67834536059d41fa5bd4eb788daee94b34:ASE-Book-System/Assets/Scripts/book.py
+
         success = True
 
     return jsonify({
         "name": book_name,
         "id": book_id,
         "success": success,
-<<<<<<<< HEAD:book.py
-        "path": resource_key 
-========
-        "path": f"../Resources/{book_name}_{book_id}.txt"
->>>>>>>> ac495e67834536059d41fa5bd4eb788daee94b34:ASE-Book-System/Assets/Scripts/book.py
+        "path": save_path
     })
 
 
@@ -86,8 +88,10 @@ def download_gutenberg_txt(book_id, save_path):
         print("File do not exist!\n")
         return None
     
-    with open(save_path, "wb") as f:
-        f.write(r.content)
+    path_checker = os.path.dirname(save_path)
+    if os.path.exists(path_checker):
+        with open(save_path, "wb") as f:
+            f.write(r.content)
 
     print(f"Successfully downloaded at:",save_path)
     return save_path

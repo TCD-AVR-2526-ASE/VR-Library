@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -109,8 +109,10 @@ public class BookRepositry : MonoBehaviour
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(jsonByte);
         request.downloadHandler = new DownloadHandlerBuffer();
+        request.timeout = 5;
         request.SetRequestHeader("Content-Type", "application/json");
 
+        // sends request and never stops?
         await request.SendWebRequest().ToTask();
 
         if (request.result == UnityWebRequest.Result.Success)
