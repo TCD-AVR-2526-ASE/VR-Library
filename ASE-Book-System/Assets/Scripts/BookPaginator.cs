@@ -13,81 +13,77 @@ public class BookPaginator : MonoBehaviour
     // chars per visualline
     public static int MaxCharsPerLine = 60;
 
-    public static async Task ProcessBook(Book book)
+    public static void ProcessBook(Book book)
     {
         Debug.Log("BookPaginator::ProcessBook");
         string text = LoadText(book.path);
-        List<string> pages = await Paginate(text);
+        List<string> pages = Paginate(text);
         book.Paginate(pages.Count, pages);
     }
-    private static Task<List<string>> Paginate(string text)
+    private static List<string> Paginate(string text)
     {
-        return Task.Run(() =>
+        string[] rawLines = text.Split('\n');
+
+        var visualLines = new List<string>();
+
+        foreach (var raw in rawLines)
         {
-            // get raw lines
-            string[] rawLines = text.Split('\n');
+            string line = raw.TrimEnd('\r');
 
-            var visualLines = new List<string>();
-
-            foreach (var raw in rawLines)
+            // null line is a line
+            if (line.Length == 0)
             {
-                string line = raw.TrimEnd('\r');
+                visualLines.Add(string.Empty);
+                continue;
+            }
 
-                // null line is a line
-                if (line.Length == 0)
+            // make visualline
+            while (line.Length > 0)
+            {
+                if (line.Length <= MaxCharsPerLine)
                 {
-                    visualLines.Add(string.Empty);
-                    continue;
+                    visualLines.Add(line);
+                    break;
                 }
 
-                // make visualline
-                while (line.Length > 0)
+                // the length ofeach visualline
+                int take = MaxCharsPerLine;
+                int breakPos = -1;
+
+                // try to find a nice break
+                for (int i = take; i >= Math.Max(0, take - 15); i--)
                 {
-                    if (line.Length <= MaxCharsPerLine)
+                    if (IsNiceBreakChar(line[i]))
                     {
-                        visualLines.Add(line);
+                        breakPos = i + 1; // ��������ָ��
                         break;
                     }
-
-                    // the length ofeach visualline
-                    int take = MaxCharsPerLine;
-                    int breakPos = -1;
-
-                    // try to find a nice break
-                    for (int i = take; i >= Math.Max(0, take - 15); i--)
-                    {
-                        if (IsNiceBreakChar(line[i]))
-                        {
-                            breakPos = i + 1; // ��������ָ��
-                            break;
-                        }
-                    }
-
-                    // if not, directly paginate it
-                    if (breakPos == -1)
-                        breakPos = take;
-
-                    string visual = line.Substring(0, breakPos).TrimEnd();
-                    visualLines.Add(visual);
-
-                    line = line.Substring(breakPos).TrimStart();
                 }
+
+                // if not, directly paginate it
+                if (breakPos == -1)
+                    breakPos = take;
+
+                string visual = line.Substring(0, breakPos).TrimEnd();
+                visualLines.Add(visual);
+
+                line = line.Substring(breakPos).TrimStart();
             }
+        }
 
-            var pages = new List<string>();
-            int index = 0;
-            int totalLines = visualLines.Count;
+        var pages = new List<string>();
+        int index = 0;
+        int totalLines = visualLines.Count;
 
-            while (index < totalLines)
-            {
-                int count = Math.Min(LinesPerPage, totalLines - index);
-                var pageLines = visualLines.GetRange(index, count);
-                pages.Add(string.Join("\n", pageLines));
-                index += count;
-            }
+        while (index < totalLines)
+        {
+            int count = Math.Min(LinesPerPage, totalLines - index);
+            var pageLines = visualLines.GetRange(index, count);
+            pages.Add(string.Join("\n", pageLines));
+            index += count;
+        }
 
-            return pages;
-        });
+        return pages;
     }
 
     static string LoadText(string path)

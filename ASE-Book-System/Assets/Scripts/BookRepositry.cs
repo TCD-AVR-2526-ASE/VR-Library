@@ -41,7 +41,7 @@ public class BookRepositry : MonoBehaviour
     private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
 
-    public async Task<Book> RequestBook(string bookName)
+    public Book RequestBook(string bookName)
     {
         Debug.Log("BookRepositry::RequestBook");
         Book book;
@@ -51,12 +51,12 @@ public class BookRepositry : MonoBehaviour
         if (book == null)
         {
             Debug.Log("Load from online library");
-            BookResponse bookResponse = await GetBookFromOnlineLibrary(bookName);
+            BookResponse bookResponse = GetBookFromOnlineLibrary(bookName);
 
-            if (bookResponse.success)
+            if (bookResponse != null && bookResponse.success)
             {
                 book = AddBook(bookResponse, 10f);
-                await BookPaginator.ProcessBook(book);
+                BookPaginator.ProcessBook(book);
             }
             else
             {
@@ -98,7 +98,7 @@ public class BookRepositry : MonoBehaviour
         return books[normalizedName];
     }
 
-    async Task<BookResponse> GetBookFromOnlineLibrary(string bookName)
+    BookResponse GetBookFromOnlineLibrary(string bookName)
     {
         Debug.Log("BookRepositry::GetBookFromOnlinelLibrary");
         string url = "http://127.0.0.1:5000/search";
@@ -113,7 +113,9 @@ public class BookRepositry : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         // sends request and never stops?
-        await request.SendWebRequest().ToTask();
+        //await request.SendWebRequest().ToTask();
+        //request.SendWebRequest().ToTask();
+        request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {

@@ -39,7 +39,7 @@ public class BookSystem : MonoBehaviour
     private Book GetBookFromRepositry(string bookName)
     {
         Debug.Log("BookSystem::GetBookFromRepositry");
-        return bookRepo.RequestBook(bookName).Result;
+        return bookRepo.RequestBook(bookName);
     }
 
 
