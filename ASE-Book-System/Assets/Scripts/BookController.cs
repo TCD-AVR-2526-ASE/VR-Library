@@ -1,39 +1,36 @@
-﻿using UnityEngine;
-using echo17.EndlessBook;
+﻿using echo17.EndlessBook;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BookController : MonoBehaviour
 {
-    private EndlessBook book;
-    public Book bookData;
+    private Book book;
 
     public BookRenderer bookRenderer;
+    public BookSystem bookSystem;
 
     // Update is called once per frame
     void Update()
     {
-        if (bookData == null || book == null) return;
+        if (book == null) return;
         if (Keyboard.current.spaceKey.isPressed) {
-            if (book.CurrentState == EndlessBook.StateEnum.ClosedFront)
-            {
-                book.SetState(EndlessBook.StateEnum.OpenMiddle);
-                Debug.Log("OpenBook!");
-            }
-            else
-            {
-                book.SetState(EndlessBook.StateEnum.ClosedFront);
-                Debug.Log("Closebook!");
-            }
+            book.ToggleBookOpening();
         }
         else if (Keyboard.current.qKey.wasPressedThisFrame)
         {
-            bookData.TurnPage(false);
-            bookRenderer.DisplayCurrent(bookData);
+            book.TurnPage(false);
+            bookSystem.AddRenderRequest(book);
         }
         else if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            bookData.TurnPage(true);
-            bookRenderer.DisplayCurrent(bookData);
+            book.TurnPage(true);
+            bookSystem.AddRenderRequest(book);
         }
+    }
+
+    public void SetBook(Book book)
+    {
+        Debug.Log(book == null);
+        this.book = book;
     }
 }

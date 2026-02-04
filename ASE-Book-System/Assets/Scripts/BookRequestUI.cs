@@ -10,8 +10,7 @@ public class BookRequestUI : MonoBehaviour
 
     public void SendBookRequest()
     {
-        string bookName = inputName.text;
-        Debug.Log("BookRequestUI::SendBookRequest");  
+        string bookName = inputName.text.ToLower();
         // send request to book system with bookName & online
         bookSystem.AddBookRequest(bookName);
     }

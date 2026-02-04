@@ -19,24 +19,71 @@ public class BookRenderer : MonoBehaviour
     public int maxCharPerPage = 500;
     public BookSystem bookSystem;
     public float titleFontSize = 20;
+    public GameObject bookRenderSystemPrefab;
 
     string content;
+    private GameObject bookRenderSystem;
+    // [0] cover [1] leftPage [2] rightPage
+    private List<Camera> cameras;
+    private List<TextMeshPro> pages;
 
     public void DisplayCurrent(Book book)
     {
-        Tuple<string, string> pages = book.GetPageText();
-        if (pages == null) return;
-        textAreaLeft.text = pages.Item1;
-        bool hasPage = pages.Item2 != null;
-        textAreaRight.text = pages.Item2 ?? "";
 
-        textAreaLeft.fontSize = book.fontSize;
-        textAreaLeft.enableAutoSizing = false;
-        textAreaRight.fontSize = book.fontSize;
-        textAreaRight.enableAutoSizing = false;
-        textAreaCover.fontSize = titleFontSize;
-        textAreaCover.enableAutoSizing = false;
-        textAreaCover.text = book.title;
+        Tuple<string, string> pagesContent = book.GetPageText();
+        string title = book.title;
+
+        int i = 0;
+        foreach (Camera cam in cameras)
+        {
+            cam.targetTexture = (RenderTexture)book.materials[i].GetTexture("_MainTex");
+            i++;
+        }
+
+        if (pagesContent == null || title == null) return;
+
+        textAreaCover = pages[0];
+        textAreaLeft = pages[1];
+        textAreaRight = pages[2];
+
+        if (pagesContent.Item1 != null)
+        {
+            textAreaLeft.text = pagesContent.Item1;
+            textAreaLeft.fontSize = book.fontSize;
+            textAreaLeft.enableAutoSizing = false;
+        }
+            
+        if (pagesContent.Item2 != null)
+        {
+            textAreaRight.text = pagesContent.Item2;
+            textAreaRight.fontSize = book.fontSize;
+            textAreaRight.enableAutoSizing = false;
+        }
+
+        if(title != null)
+        {
+            textAreaCover.text = title;
+            textAreaCover.fontSize = titleFontSize;
+            textAreaCover.enableAutoSizing = false;
+        }
+    }
+
+    private void Awake()
+    {
+        bookRenderSystem = GameObject.Instantiate(bookRenderSystemPrefab);
+        cameras = new List<Camera>
+        {
+            GameObject.Find("CoverCamera").GetComponent<Camera>(),
+            GameObject.Find("PageCamera-Left").GetComponent<Camera>(),
+            GameObject.Find("PageCamera-Right").GetComponent<Camera>()
+        };
+
+        pages = new List<TextMeshPro>
+        {
+            GameObject.Find("CoverContent").GetComponent<TextMeshPro>(),
+            GameObject.Find("PageContent-Left").GetComponent<TextMeshPro>(),
+            GameObject.Find("PageContent-Right").GetComponent<TextMeshPro>()
+        };
     }
 
     //content = "Loading...";

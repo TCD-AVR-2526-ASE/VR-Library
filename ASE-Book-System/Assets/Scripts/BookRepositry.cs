@@ -43,19 +43,20 @@ public class BookRepositry : MonoBehaviour
 
     public Book RequestBook(string bookName)
     {
-        Debug.Log("BookRepositry::RequestBook");
+        //Debug.Log("BookRepositry::RequestBook");
         Book book;
 
         book = GetBookFromLocalLibrary(bookName);
 
         if (book == null)
         {
-            Debug.Log("Load from online library");
+            //Debug.Log("Load from online library");
             BookResponse bookResponse = GetBookFromOnlineLibrary(bookName);
 
             if (bookResponse != null && bookResponse.success)
             {
                 book = AddBook(bookResponse, 10f);
+                Debug.Log(book == null);
                 BookPaginator.ProcessBook(book);
             }
             else
@@ -69,7 +70,6 @@ public class BookRepositry : MonoBehaviour
 
     Book GetBookFromLocalLibrary(string bookName)
     {
-        Debug.Log("BookRepositry::GetBookFromLocalLibrary");
         Book book;
         //MatchName(bookName);
         return books.TryGetValue(bookName, out book) ? book : null;
@@ -77,7 +77,7 @@ public class BookRepositry : MonoBehaviour
 
     private Book AddBook(BookResponse bookResponse, float fontSize = .1f)
     {
-        Debug.Log("BookRepositry::AddBook");
+        //Debug.Log("BookRepositry::AddBook");
         if (bookCount >= MAX_CAPACITY)
         {
             List<string> bookNames = books.Keys.ToList();
@@ -100,7 +100,7 @@ public class BookRepositry : MonoBehaviour
 
     BookResponse GetBookFromOnlineLibrary(string bookName)
     {
-        Debug.Log("BookRepositry::GetBookFromOnlinelLibrary");
+        //Debug.Log("BookRepositry::GetBookFromOnlinelLibrary");
         string url = "http://127.0.0.1:5000/search";
 
         string json = "{\"name\": \"" + bookName + "\"}";
@@ -121,6 +121,7 @@ public class BookRepositry : MonoBehaviour
         {
             string bookInfo = request.downloadHandler.text;
             BookResponse bookResponse = JsonUtility.FromJson<BookResponse>(bookInfo);
+            Debug.Log("This is the current book " + bookResponse.name);
             return bookResponse;
         }
 
@@ -130,8 +131,6 @@ public class BookRepositry : MonoBehaviour
     private void Awake()
     {
         books = new Dictionary<string, Book>(MAX_CAPACITY);
-
-        Debug.Log("Awake: " + savePath);
 
         string[] files = Directory.GetFiles(savePath, "*.txt");
 
