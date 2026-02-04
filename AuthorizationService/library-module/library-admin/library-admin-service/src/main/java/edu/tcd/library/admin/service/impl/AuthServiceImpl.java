@@ -5,7 +5,9 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.temp.SaTempUtil;
 import cn.hutool.crypto.digest.BCrypt;
+import edu.tcd.library.admin.dto.UnityCustomInfo;
 import edu.tcd.library.admin.service.UmsAdminService;
+import edu.tcd.library.admin.service.UnityService;
 import edu.tcd.library.admin.vo.Oauth2TokenVO;
 import edu.tcd.library.admin.service.AuthService;
 import edu.tcd.library.common.core.api.CommonResult;
@@ -26,8 +28,11 @@ public class AuthServiceImpl implements AuthService {
 
     private final UmsAdminService adminService;
 
-    public AuthServiceImpl(UmsAdminService adminService) {
+    private final UnityService unityService;
+
+    public AuthServiceImpl(UmsAdminService adminService,UnityService unityService) {
         this.adminService = adminService;
+        this.unityService = unityService;
     }
 
 
@@ -43,11 +48,13 @@ public class AuthServiceImpl implements AuthService {
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         String refreshToken = SaTempUtil.createToken(dto.getId(), REFRESH_TOKEN_EXPIRE);
 
+        UnityCustomInfo customInfo = unityService.customToken(dto.getUsername());
         Oauth2TokenVO tokenVO = Oauth2TokenVO.builder()
                 .token(tokenInfo.tokenValue)
                 .expiresIn(Long.valueOf(expireTime))
                 .refreshToken(refreshToken)
                 .tokenHead(TOKEN_PREFIX)
+                .unityCustomIdToken(customInfo.getIdToken())
                 .build();
 
         return CommonResult.success(tokenVO);

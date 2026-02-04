@@ -24,4 +24,7 @@ public class Oauth2TokenVO {
 
     @Schema(description = "Expiration time in seconds")
     private Long expiresIn;
+
+    @Schema(description = "Unity Custom-ID Token")
+    private String unityCustomIdToken;
 }
