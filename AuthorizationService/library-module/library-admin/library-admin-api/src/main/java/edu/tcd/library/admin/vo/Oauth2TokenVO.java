@@ -27,4 +27,7 @@ public class Oauth2TokenVO {
 
     @Schema(description = "Unity Custom-ID Token")
     private String unityCustomIdToken;
+
+    @Schema(description = "Unity Custom-ID Session Token")
+    private String unityCustomIdSessionToken;
 }

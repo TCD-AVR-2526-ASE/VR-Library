@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UnityService unityService;
 
-    public AuthServiceImpl(UmsAdminService adminService,UnityService unityService) {
+    public AuthServiceImpl(UmsAdminService adminService, UnityService unityService) {
         this.adminService = adminService;
         this.unityService = unityService;
     }
@@ -54,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
                 .expiresIn(Long.valueOf(expireTime))
                 .refreshToken(refreshToken)
                 .tokenHead(TOKEN_PREFIX)
+                .unityCustomIdSessionToken(customInfo.getSessionToken())
                 .unityCustomIdToken(customInfo.getIdToken())
                 .build();
 
