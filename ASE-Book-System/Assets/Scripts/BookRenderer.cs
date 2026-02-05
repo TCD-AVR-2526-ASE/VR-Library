@@ -13,15 +13,19 @@ using echo17.EndlessBook;
 
 public class BookRenderer : MonoBehaviour
 {
+    // areas for presenting the book's contentss
     public TMP_Text textAreaLeft;
     public TMP_Text textAreaRight;
     public TMP_Text textAreaCover;
-    public int maxCharPerPage = 500;
-    public BookSystem bookSystem;
-    public float titleFontSize = 20;
-    public GameObject bookRenderSystemPrefab;
 
-    string content;
+    // formatting for each book
+    public int maxCharPerPage = 500;
+    public float titleFontSize = 20;
+
+    // the book rendering systems
+    public GameObject bookRenderSystemPrefab;
+    public BookSystem bookSystem;
+
     private GameObject bookRenderSystem;
     // [0] cover [1] leftPage [2] rightPage
     [SerializeField]
@@ -29,11 +33,12 @@ public class BookRenderer : MonoBehaviour
     [SerializeField]
     private List<TextMeshPro> pages;
 
+    // Reads the current pages and title of assigned book and then updates the render system
+    // cameras inside the render system will render the contents into the book
     public void DisplayCurrent(Book book)
     {
 
         Tuple<string, string> pagesContent = book.GetPageText();
-        Debug.Log(pagesContent.Item1);
         string title = book.title;
 
         if (pagesContent == null || title == null) return;
@@ -67,12 +72,13 @@ public class BookRenderer : MonoBehaviour
         foreach (Camera cam in cameras)
         {
             cam.targetTexture = book.renderTextures[i];
-            Debug.Log(cam.targetTexture == null);
             cam.Render();
             i++;
         }
     }
 
+    // Instantiate the book rendering system(prefab) and then references of cameras and text fields
+    // disabled the render system cameras (so that they draw on commands instead of every frame)
     private void Awake()
     {
         bookRenderSystem = GameObject.Instantiate(bookRenderSystemPrefab);
@@ -83,6 +89,11 @@ public class BookRenderer : MonoBehaviour
             GameObject.Find("PageCamera-Right").GetComponent<Camera>()
         };
 
+        foreach(var cam in cameras)
+        {
+            cam.enabled = false;
+        }
+
         pages = new List<TextMeshPro>
         {
             GameObject.Find("CoverContent").GetComponent<TextMeshPro>(),
@@ -90,32 +101,4 @@ public class BookRenderer : MonoBehaviour
             GameObject.Find("PageContent-Right").GetComponent<TextMeshPro>()
         };
     }
-
-    //content = "Loading...";
-    //Paginate();
-    //textAreaLeft.fontSize = 10f;
-    //textAreaLeft.enableAutoSizing = false;
-    //textAreaRight.fontSize = 10f;
-    //textAreaRight.enableAutoSizing = false;
-    //ShowPage();
-
-    // move to book system
-
-    // duplicate pagination because test of local DB as well
-    // remove one set & throw the other into the book data struct.
-    //content = "Paginating...";
-    //textAreaLeft.fontSize = 10f;
-    //textAreaLeft.enableAutoSizing = false;
-    //textAreaRight.fontSize = 10f;
-    //textAreaRight.enableAutoSizing = false;
-
-    //LoadText(book.path);
-    //textAreaLeft.fontSize = 10f;
-    //textAreaLeft.enableAutoSizing = false;
-    //textAreaRight.fontSize = 10f;
-    //textAreaRight.enableAutoSizing = false;
-    //textAreaCover.fontSize = 20f;
-    //textAreaCover.enableAutoSizing = false;
-    //textAreaCover.text = book.title;
-    //ShowPage();
 }

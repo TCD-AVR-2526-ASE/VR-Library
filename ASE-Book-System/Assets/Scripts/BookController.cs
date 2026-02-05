@@ -4,17 +4,21 @@ using UnityEngine.InputSystem;
 
 public class BookController : MonoBehaviour
 {
+    // the active book
     private Book book;
 
-    public BookRenderer bookRenderer;
+    // the boss
     public BookSystem bookSystem;
 
-    // Update is called once per frame
+    // read the keyboard input for controling the active book per frame 
+    // there is no way to change the active book yet (the latest book is activated)
+    // send render request to the bookSystem if the active book is opened, closed or turned
     void Update()
     {
         if (book == null) return;
         if (Keyboard.current.spaceKey.isPressed) {
             book.ToggleBookOpening();
+            bookSystem.AddRenderRequest(book);
         }
         else if (Keyboard.current.qKey.wasPressedThisFrame)
         {
@@ -28,9 +32,9 @@ public class BookController : MonoBehaviour
         }
     }
 
+    // Set the active book for this controller
     public void SetBook(Book book)
     {
-        Debug.Log(book == null);
         this.book = book;
     }
 }

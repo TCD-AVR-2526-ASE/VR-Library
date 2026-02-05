@@ -9,28 +9,32 @@ using UnityEngine.UIElements;
 [CreateAssetMenu(fileName = "Book", menuName = "Scriptable Objects/Book")]
 public class Book : ScriptableObject
 {
+    // the information abount each book
     public string path { get; private set; } = null;
     public int id { get; private set; } = -1;
     public float fontSize { get; private set; } = 10f;
     public string title { get; private set; } = "";
     public int activePage {get; protected set;} = 0;
     public int totalPages { get; protected set; } = 0;
+
+    // the book mesh of this book
     private EndlessBook endlessbBookInstance = null;
+
+    // materials and textures for rendering the book's contents
     // [0] cover [1] leftPage [2] rightPage
     public List<Material> materials;
     public List<RenderTexture> renderTextures;
-
     private List<string> pages;
 
+    // Intialize the core data of the book
+    // the path should be the path in local disk, and now the path is relative to the unity project
+    // the name is the book title
+    // textures for presenting contents and corresponding materials are initialized inside here
     public void Init(string path, string name, float fontSize)
     {
         this.path = path;
         this.fontSize = fontSize;
         title = name;
-        //pageTextures = new List<RenderTexture>();
-        //pageTextures.Add(new RenderTexture(1024, 1024, 1)); // cover
-        //pageTextures.Add(new RenderTexture(1024, 1024, 1)); // left page
-        //pageTextures.Add(new RenderTexture(1024, 1024, 1)); // right page
 
         materials = new List<Material>();
         renderTextures = new List<RenderTexture>();
@@ -44,12 +48,17 @@ public class Book : ScriptableObject
         }
     }
 
+    // store the paginated book data here
+    // paginatedText should be a list of string each representing a page's content
     public void Paginate(int pageCount, List<string> paginatedText)
     {
         totalPages = pageCount;
         pages = paginatedText;
     }
 
+    // move forward to the next two pages if forward is true
+    // and vice versa
+    // it also checks whether go to the negtive pages or exceed the total page count
     public void TurnPage(bool forward = true)
     {
         activePage = forward ? 
@@ -77,12 +86,10 @@ public class Book : ScriptableObject
         if (this.endlessbBookInstance.CurrentState == EndlessBook.StateEnum.ClosedFront)
         {
             this.endlessbBookInstance.SetState(EndlessBook.StateEnum.OpenMiddle);
-            Debug.Log("OpenBook!");
         }
         else
         {
             this.endlessbBookInstance.SetState(EndlessBook.StateEnum.ClosedFront);
-            Debug.Log("Closebook!");
         }
     }
 }

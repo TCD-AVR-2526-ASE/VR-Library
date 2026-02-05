@@ -41,22 +41,23 @@ public class BookRepositry : MonoBehaviour
     private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
 
+    // the bookName is the title of the book (full lower case and spacing allowed)
+    // try to get the book from local library if was found locally
+    // if not, try to get the book from gutenberg online library
+    // if not, return a null value
     public Book RequestBook(string bookName)
     {
-        //Debug.Log("BookRepositry::RequestBook");
         Book book;
 
         book = GetBookFromLocalLibrary(bookName);
 
         if (book == null)
         {
-            //Debug.Log("Load from online library");
             BookResponse bookResponse = GetBookFromOnlineLibrary(bookName);
 
             if (bookResponse != null && bookResponse.success)
             {
                 book = AddBook(bookResponse, 10f);
-                Debug.Log(book == null);
             }
             else
             {
@@ -68,6 +69,9 @@ public class BookRepositry : MonoBehaviour
         return book;
     }
 
+    // the bookName is the title of the book (full lower case and spacing allowed)
+    // try to get a book from local repositry books
+    // if not, return a null value
     Book GetBookFromLocalLibrary(string bookName)
     {
         Book book;
@@ -75,9 +79,12 @@ public class BookRepositry : MonoBehaviour
         return books.TryGetValue(bookName, out book) ? book : null;
     }
 
+    // the BookResponse is the response from the GetBookFromOnlineLibrary (struct defined above)
+    // add a book to the local repositry
+    // if the repositry reaches its max capicity
+    // remove a random book from local repositry and add our book on the tail of it
     private Book AddBook(BookResponse bookResponse, float fontSize = 10.0f)
     {
-        //Debug.Log("BookRepositry::AddBook");
         if (bookCount >= MAX_CAPACITY)
         {
             List<string> bookNames = books.Keys.ToList();
@@ -98,9 +105,11 @@ public class BookRepositry : MonoBehaviour
         return books[normalizedName];
     }
 
+    // !!!BUG!!!
+    // bug at request.SendWebRequest();
+    // dose not wait web response
     BookResponse GetBookFromOnlineLibrary(string bookName)
     {
-        //Debug.Log("BookRepositry::GetBookFromOnlinelLibrary");
         string url = "http://127.0.0.1:5000/search";
 
         string json = "{\"name\": \"" + bookName + "\"}";
@@ -112,22 +121,22 @@ public class BookRepositry : MonoBehaviour
         request.timeout = 5;
         request.SetRequestHeader("Content-Type", "application/json");
 
-        // sends request and never stops?
-        //await request.SendWebRequest().ToTask();
-        //request.SendWebRequest().ToTask();
         request.SendWebRequest();
+        // await request.SendWebRequest(); this will deadlock if called from Update()
+        // try calling from event using .forgot()
 
         if (request.result == UnityWebRequest.Result.Success)
         {
             string bookInfo = request.downloadHandler.text;
             BookResponse bookResponse = JsonUtility.FromJson<BookResponse>(bookInfo);
-            Debug.Log("This is the current book " + bookResponse.name);
             return bookResponse;
         }
 
         return null;
     }
 
+    // Intialize the local repositry books
+    // and load all the books from disk
     private void Awake()
     {
         books = new Dictionary<string, Book>(MAX_CAPACITY);
@@ -147,9 +156,11 @@ public class BookRepositry : MonoBehaviour
         }
     }
 
+    // match the closest name in the local repositry
+    // now we use exact match for finding a book in local repositry
+    // repurposed function to search function? 
     string MatchName(string name)
     {
-        Debug.Log("BookRepositry::MatchName");
         int minDist = int.MaxValue;
         string target = null;
         if (books.Count == 0) return null;

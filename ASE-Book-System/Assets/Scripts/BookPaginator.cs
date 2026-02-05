@@ -13,13 +13,15 @@ public class BookPaginator : MonoBehaviour
     // chars per visualline
     public static int MaxCharsPerLine = 60;
 
+    // receive the book data and divided it into pages
     public static void ProcessBook(Book book)
     {
-        Debug.Log("BookPaginator::ProcessBook");
         string text = LoadText(book.path);
         List<string> pages = Paginate(text);
         book.Paginate(pages.Count, pages);
     }
+
+    // break the given text into small chunks that are suitable for being dispalyed on one page
     private static List<string> Paginate(string text)
     {
         string[] rawLines = text.Split('\n');
@@ -86,11 +88,13 @@ public class BookPaginator : MonoBehaviour
         return pages;
     }
 
+    // Load the whole contents of a book from disk
     static string LoadText(string path)
     {
         return File.ReadAllText(path);
     }
 
+    // Judge whether the given char c is a good choice to be the breakpoint to create a new chunk
     private static bool IsNiceBreakChar(char c)
     {
         return char.IsWhiteSpace(c) ||
