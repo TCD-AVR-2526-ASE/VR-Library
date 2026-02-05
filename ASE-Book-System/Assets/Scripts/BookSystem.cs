@@ -34,6 +34,7 @@ public class BookSystem : MonoBehaviour
                 EndlessBook endlessBook = GameObject.Instantiate(endlessBookPrefab).GetComponent<EndlessBook>();
                 book.SetBookInstance(endlessBook);
                 bookController.SetBook(book);
+                bookRenderer.DisplayCurrent(book);
                 i--;
             }
         }

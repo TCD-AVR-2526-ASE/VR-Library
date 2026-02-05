@@ -18,6 +18,7 @@ public class Book : ScriptableObject
     private EndlessBook endlessbBookInstance = null;
     // [0] cover [1] leftPage [2] rightPage
     public List<Material> materials;
+    public List<RenderTexture> renderTextures;
 
     private List<string> pages;
 
@@ -32,12 +33,15 @@ public class Book : ScriptableObject
         //pageTextures.Add(new RenderTexture(1024, 1024, 1)); // right page
 
         materials = new List<Material>();
-        materials.Add(new Material(Shader.Find("Universal Render Pipeline/Simple Lit"))); // cover
-        materials[0].SetTexture("_MainTex", new RenderTexture(1024, 1024, 1));
-        materials.Add(new Material(Shader.Find("Universal Render Pipeline/Simple Lit"))); // left page
-        materials[1].SetTexture("_MainTex", new RenderTexture(1024, 1024, 1));
-        materials.Add(new Material(Shader.Find("Universal Render Pipeline/Simple Lit"))); // right page
-        materials[2].SetTexture("_MainTex", new RenderTexture(1024, 1024, 1));
+        renderTextures = new List<RenderTexture>();
+
+        for (int i = 0; i < 3 ; i++)
+        {
+            materials.Add(new Material(Shader.Find("Universal Render Pipeline/Simple Lit")));
+            renderTextures.Add(new RenderTexture(1024, 1024, 1));
+            renderTextures[i].Create();
+            materials[i].SetTexture("_BaseMap", renderTextures[i]);
+        }
     }
 
     public void Paginate(int pageCount, List<string> paginatedText)

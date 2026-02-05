@@ -24,21 +24,17 @@ public class BookRenderer : MonoBehaviour
     string content;
     private GameObject bookRenderSystem;
     // [0] cover [1] leftPage [2] rightPage
+    [SerializeField]
     private List<Camera> cameras;
+    [SerializeField]
     private List<TextMeshPro> pages;
 
     public void DisplayCurrent(Book book)
     {
 
         Tuple<string, string> pagesContent = book.GetPageText();
+        Debug.Log(pagesContent.Item1);
         string title = book.title;
-
-        int i = 0;
-        foreach (Camera cam in cameras)
-        {
-            cam.targetTexture = (RenderTexture)book.materials[i].GetTexture("_MainTex");
-            i++;
-        }
 
         if (pagesContent == null || title == null) return;
 
@@ -65,6 +61,15 @@ public class BookRenderer : MonoBehaviour
             textAreaCover.text = title;
             textAreaCover.fontSize = titleFontSize;
             textAreaCover.enableAutoSizing = false;
+        }
+
+        int i = 0;
+        foreach (Camera cam in cameras)
+        {
+            cam.targetTexture = book.renderTextures[i];
+            Debug.Log(cam.targetTexture == null);
+            cam.Render();
+            i++;
         }
     }
 

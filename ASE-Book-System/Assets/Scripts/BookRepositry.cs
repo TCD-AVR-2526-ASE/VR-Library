@@ -57,7 +57,6 @@ public class BookRepositry : MonoBehaviour
             {
                 book = AddBook(bookResponse, 10f);
                 Debug.Log(book == null);
-                BookPaginator.ProcessBook(book);
             }
             else
             {
@@ -65,6 +64,7 @@ public class BookRepositry : MonoBehaviour
             }
         }
 
+        BookPaginator.ProcessBook(book);
         return book;
     }
 
@@ -75,7 +75,7 @@ public class BookRepositry : MonoBehaviour
         return books.TryGetValue(bookName, out book) ? book : null;
     }
 
-    private Book AddBook(BookResponse bookResponse, float fontSize = .1f)
+    private Book AddBook(BookResponse bookResponse, float fontSize = 10.0f)
     {
         //Debug.Log("BookRepositry::AddBook");
         if (bookCount >= MAX_CAPACITY)
