@@ -6,7 +6,7 @@ using System;
 public class BookRenderer : MonoBehaviour
 {
     /// <summary>
-    /// Path relative to Assets/Resources folder to access the BookRenderingSystem prefab
+    /// Path relative to Assets/Resources folder to access the BookRenderingSystem prefab (no file extension)
     /// </summary>
     private readonly string renderingSystemPrefabPath = "BookSystem/Prefabs/BookRenderSystem";
 
