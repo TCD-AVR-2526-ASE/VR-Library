@@ -7,7 +7,9 @@ import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
@@ -31,6 +33,8 @@ import edu.tcd.library.common.minio.service.MinioService;
 import edu.tcd.library.common.security.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,6 +101,7 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         return this.baseMapper.selectOne(lambda);
     }
 
+    @Transactional
     @Override
     public UmsAdmin register(UmsAdminDTO umsAdminParam) {
         UmsAdmin umsAdmin = new UmsAdmin();
@@ -113,6 +118,13 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         String encodePassword = BCrypt.hashpw(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
         this.baseMapper.insert(umsAdmin);
+
+        //set user default role as a guest
+        LambdaQueryWrapper<UmsRole> wrapper = Wrappers.lambdaQuery(UmsRole.class);
+        wrapper.eq(UmsRole::getCode, "Guest");
+        UmsRole guestRole = roleService.getOne(wrapper);
+        Assert.notNull(guestRole, "Cannot get Guest role in the system!");
+        this.roleService.userAuth(guestRole.getId(), Collections.singletonList(umsAdmin.getId()));
         return umsAdmin;
     }
 
