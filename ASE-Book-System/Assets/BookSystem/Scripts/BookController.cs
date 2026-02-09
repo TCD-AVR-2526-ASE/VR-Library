@@ -1,18 +1,26 @@
-﻿using echo17.EndlessBook;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BookController : MonoBehaviour
 {
-    // the active book
+    /// <summary>
+    /// A reference to the active book.
+    /// </summary>
     private Book book;
 
-    // the boss
-    public BookSystem bookSystem;
+    /// <summary>
+    /// the boss.
+    /// </summary>
+    private BookSystem bookSystem;
 
-    // read the keyboard input for controling the active book per frame 
-    // there is no way to change the active book yet (the latest book is activated)
-    // send render request to the bookSystem if the active book is opened, closed or turned
+    private void Start()
+    {
+        bookSystem = FindFirstObjectByType<BookSystem>();
+    }
+
+    // reads the keyboard input for controlling the active book per frame.
+    // there is no way to change the active book yet (the latest book is activated).
+    // sends render request to the bookSystem if the active book is opened, closed or has its pages turned.
     void Update()
     {
         if (book == null) return;
@@ -32,7 +40,10 @@ public class BookController : MonoBehaviour
         }
     }
 
-    // Set the active book for this controller
+    /// <summary>
+    /// Sets the active book for this controller.
+    /// </summary>
+    /// <param name="book"></param>
     public void SetBook(Book book)
     {
         this.book = book;

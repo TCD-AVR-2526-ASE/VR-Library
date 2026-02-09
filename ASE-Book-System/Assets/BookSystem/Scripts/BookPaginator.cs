@@ -1,27 +1,35 @@
 ﻿using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Android;
-using System.Threading.Tasks;
 using System;
 using System.IO;
 
 public class BookPaginator : MonoBehaviour
 {
-    // how many visualline per page
+    /// <summary>
+    /// maximum amount of lines displayed per page.
+    /// </summary>
     public static int LinesPerPage = 30;
-    // chars per visualline
+    /// <summary>
+    /// maximum amount of chars per line on page.
+    /// </summary>
     public static int MaxCharsPerLine = 60;
 
-    // receive the book data and divided it into pages
+    /// <summary>
+    /// Loads the book text and segments it into pages.
+    /// </summary>
+    /// <param name="book"></param>
     public static void ProcessBook(Book book)
     {
         string text = LoadText(book.path);
         List<string> pages = Paginate(text);
-        book.Paginate(pages.Count, pages);
+        book.Paginate(pages);
     }
 
-    // break the given text into small chunks that are suitable for being dispalyed on one page
+    /// <summary>
+    /// break the given text into small chunks that are suitable for being dispalyed on one page.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     private static List<string> Paginate(string text)
     {
         string[] rawLines = text.Split('\n');
@@ -88,13 +96,22 @@ public class BookPaginator : MonoBehaviour
         return pages;
     }
 
-    // Load the whole contents of a book from disk
+    /// <summary>
+    /// Load the whole contents of a book from disk.
+    /// 'path' should be a valid filepath relative to the Unity Project Root.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
     static string LoadText(string path)
     {
         return File.ReadAllText(path);
     }
 
-    // Judge whether the given char c is a good choice to be the breakpoint to create a new chunk
+    /// <summary>
+    /// Judge whether the given char c is a good choice to be the breakpoint to create a new chunk.
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns></returns>
     private static bool IsNiceBreakChar(char c)
     {
         return char.IsWhiteSpace(c) ||

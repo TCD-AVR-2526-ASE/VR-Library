@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
@@ -36,7 +34,7 @@ public class BookRepositry : MonoBehaviour
 
     private Dictionary<string, Book> books;
 
-    private string savePath = "./Assets/Resources/";
+    private readonly string savePath = "./Assets/Resources/BookFiles";
 
     private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
@@ -111,6 +109,8 @@ public class BookRepositry : MonoBehaviour
     BookResponse GetBookFromOnlineLibrary(string bookName)
     {
         string url = "http://127.0.0.1:5000/search";
+
+
 
         string json = "{\"name\": \"" + bookName + "\"}";
         byte[] jsonByte = Encoding.UTF8.GetBytes(json);

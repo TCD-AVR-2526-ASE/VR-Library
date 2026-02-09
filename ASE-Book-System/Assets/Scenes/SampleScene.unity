@@ -374,103 +374,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1 &643746029
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 643746034}
-  - component: {fileID: 643746033}
-  - component: {fileID: 643746032}
-  - component: {fileID: 643746031}
-  - component: {fileID: 643746030}
-  m_Layer: 0
-  m_Name: BookManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &643746030
+--- !u!114 &643746033 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2085473817421017456, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+  m_PrefabInstance: {fileID: 806912811491847200}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643746029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c84422758410f6a4f970af05ab091e48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BookLoader
-  textAreaLeft: {fileID: 0}
-  textAreaRight: {fileID: 0}
-  textAreaCover: {fileID: 0}
-  maxCharPerPage: 100
-  bookSystem: {fileID: 643746033}
-  titleFontSize: 20
-  bookRenderSystemPrefab: {fileID: 349282290959209157, guid: 2c2877a392e9af1459a13425b8be3142, type: 3}
-  cameras: []
-  pages: []
---- !u!114 &643746031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643746029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dcc1018b8de50347aa954a14299ffee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BookPaginator
---- !u!114 &643746032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643746029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e32af950948c854896f4f7d88805484, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BookController
-  bookRenderer: {fileID: 643746030}
-  bookSystem: {fileID: 643746033}
---- !u!114 &643746033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643746029}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05e21b24b4f59dd4d9a825d58f9c3f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BookSystem
-  bookController: {fileID: 643746032}
-  endlessBookPrefab: {fileID: 311184656859670933, guid: 5ef2bcca2a96f38498a8dcf52868e53e, type: 3}
-  bookRenderer: {fileID: 643746030}
---- !u!4 &643746034
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643746029}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.04984, y: -0.39093, z: 0.00158}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,6 +587,63 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!1001 &806912811491847200
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.04984
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.39093
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.00158
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819240569126391107, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7429272332381981311, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
+      propertyPath: m_Name
+      value: BookManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f422e6924e151b647be1cc31d8df83a4, type: 3}
 --- !u!1 &1002984062215717986
 GameObject:
   m_ObjectHideFlags: 0
@@ -1821,5 +1792,5 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 7983727487805684534}
-  - {fileID: 643746034}
+  - {fileID: 806912811491847200}
   - {fileID: 3029414146864391373}

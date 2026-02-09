@@ -1,37 +1,69 @@
 ﻿using UnityEngine;
 using TMPro;
-using System.IO;
-using NUnit.Framework;
 using System.Collections.Generic;
-using UnityEngine.UI;
-using System.Text;
-using UnityEngine.Networking;
-using System.Collections;
-using System.Threading.Tasks;
 using System;
-using echo17.EndlessBook;
 
 public class BookRenderer : MonoBehaviour
 {
+    /// <summary>
+    /// Path relative to Assets/Resources folder to access the BookRenderingSystem prefab
+    /// </summary>
+    private readonly string renderingSystemPrefabPath = "BookSystem/Prefabs/BookRenderSystem";
+
     // areas for presenting the book's contentss
-    public TMP_Text textAreaLeft;
-    public TMP_Text textAreaRight;
-    public TMP_Text textAreaCover;
+    private TMP_Text textAreaLeft;
+    private TMP_Text textAreaRight;
+    private TMP_Text textAreaCover;
 
     // formatting for each book
-    public int maxCharPerPage = 500;
-    public float titleFontSize = 20;
+    [SerializeField]
+    private int maxCharPerPage = 500;
+    [SerializeField]
+    private float titleFontSize = 20;
 
     // the book rendering systems
-    public GameObject bookRenderSystemPrefab;
-    public BookSystem bookSystem;
-
+    private GameObject bookRenderSystemPrefab;
+    private BookSystem bookSystem;
     private GameObject bookRenderSystem;
+
     // [0] cover [1] leftPage [2] rightPage
     [SerializeField]
     private List<Camera> cameras;
     [SerializeField]
     private List<TextMeshPro> pages;
+
+    // Instantiate the book rendering system(prefab) and then references of cameras and text fields
+    // disabled the render system cameras (so that they draw on commands instead of every frame)
+    private void Awake()
+    {
+        bookRenderSystemPrefab = Resources.Load<GameObject>(renderingSystemPrefabPath);
+        Debug.Assert(bookRenderSystemPrefab != null);
+
+        bookRenderSystem = Instantiate(bookRenderSystemPrefab);
+        cameras = new List<Camera>
+        {
+            GameObject.Find("CoverCamera").GetComponent<Camera>(),
+            GameObject.Find("PageCamera-Left").GetComponent<Camera>(),
+            GameObject.Find("PageCamera-Right").GetComponent<Camera>()
+        };
+
+        foreach (var cam in cameras)
+        {
+            cam.enabled = false;
+        }
+
+        pages = new List<TextMeshPro>
+        {
+            GameObject.Find("CoverContent").GetComponent<TextMeshPro>(),
+            GameObject.Find("PageContent-Left").GetComponent<TextMeshPro>(),
+            GameObject.Find("PageContent-Right").GetComponent<TextMeshPro>()
+        };
+    }
+
+    private void Start()
+    {
+        bookSystem = FindFirstObjectByType<BookSystem>();
+    }
 
     // Reads the current pages and title of assigned book and then updates the render system
     // cameras inside the render system will render the contents into the book
@@ -75,30 +107,5 @@ public class BookRenderer : MonoBehaviour
             cam.Render();
             i++;
         }
-    }
-
-    // Instantiate the book rendering system(prefab) and then references of cameras and text fields
-    // disabled the render system cameras (so that they draw on commands instead of every frame)
-    private void Awake()
-    {
-        bookRenderSystem = GameObject.Instantiate(bookRenderSystemPrefab);
-        cameras = new List<Camera>
-        {
-            GameObject.Find("CoverCamera").GetComponent<Camera>(),
-            GameObject.Find("PageCamera-Left").GetComponent<Camera>(),
-            GameObject.Find("PageCamera-Right").GetComponent<Camera>()
-        };
-
-        foreach(var cam in cameras)
-        {
-            cam.enabled = false;
-        }
-
-        pages = new List<TextMeshPro>
-        {
-            GameObject.Find("CoverContent").GetComponent<TextMeshPro>(),
-            GameObject.Find("PageContent-Left").GetComponent<TextMeshPro>(),
-            GameObject.Find("PageContent-Right").GetComponent<TextMeshPro>()
-        };
     }
 }
