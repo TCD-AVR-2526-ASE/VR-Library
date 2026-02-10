@@ -2,6 +2,7 @@
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
@@ -35,9 +36,55 @@ public class BookRepositry : MonoBehaviour
     private Dictionary<string, Book> books;
 
     private readonly string savePath = "./Assets/Resources/BookFiles";
+    private Queue<UnityWebRequestAsyncOperation> pendingRequests;
 
     private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
+    public int timeoutInSec;
+
+    // Intialize the local repositry books
+    // and load all the books from disk
+    private void Awake()
+    {
+        books = new Dictionary<string, Book>(MAX_CAPACITY);
+
+        string[] files = Directory.GetFiles(savePath, "*.txt");
+
+        foreach (string file in files)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(file);
+
+            BookResponse response = new BookResponse();
+            response.name = fileName.Split('_')[0];
+            response.path = file;
+            response.success = true;
+
+            AddBook(response);
+        }
+    }
+
+    public bool PingLocalhost()
+    {
+        // localhost IP
+        string url = "127.0.0.1";
+
+        try
+        {
+            using (System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping())
+            {
+                PingReply reply = pinger.Send(url);
+                return reply.Status == IPStatus.Success;
+            }
+        }
+        catch (PingException)
+        {
+            return false;
+        }
+    }
+
+    public bool PingGutenberg() {  
+        return false; 
+    }
 
     // the bookName is the title of the book (full lower case and spacing allowed)
     // try to get the book from local library if was found locally
@@ -51,7 +98,10 @@ public class BookRepositry : MonoBehaviour
 
         if (book == null)
         {
-            BookResponse bookResponse = GetBookFromOnlineLibrary(bookName);
+            var request = CreateBookWebRequest(bookName, timeoutInSec);
+
+            // -------------------- needs decoupling; This should only happen once the request comes in. -------------------- 
+            BookResponse bookResponse = GetBookFromOnlineLibrary(request.webRequest);
 
             if (bookResponse != null && bookResponse.success)
             {
@@ -103,14 +153,9 @@ public class BookRepositry : MonoBehaviour
         return books[normalizedName];
     }
 
-    // !!!BUG!!!
-    // bug at request.SendWebRequest();
-    // dose not wait web response
-    BookResponse GetBookFromOnlineLibrary(string bookName)
+    public UnityWebRequestAsyncOperation CreateBookWebRequest(string bookName, int timeout)
     {
         string url = "http://127.0.0.1:5000/search";
-
-
 
         string json = "{\"name\": \"" + bookName + "\"}";
         byte[] jsonByte = Encoding.UTF8.GetBytes(json);
@@ -118,10 +163,17 @@ public class BookRepositry : MonoBehaviour
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(jsonByte);
         request.downloadHandler = new DownloadHandlerBuffer();
-        request.timeout = 5;
+        request.timeout = timeout;
         request.SetRequestHeader("Content-Type", "application/json");
 
-        request.SendWebRequest();
+        return request.SendWebRequest();
+    }
+
+    // !!!BUG!!!
+    // bug at request.SendWebRequest();
+    // dose not wait web response
+    private BookResponse GetBookFromOnlineLibrary(UnityWebRequest request)
+    {
         // await request.SendWebRequest(); this will deadlock if called from Update()
         // try calling from event using .forgot()
 
@@ -133,27 +185,6 @@ public class BookRepositry : MonoBehaviour
         }
 
         return null;
-    }
-
-    // Intialize the local repositry books
-    // and load all the books from disk
-    private void Awake()
-    {
-        books = new Dictionary<string, Book>(MAX_CAPACITY);
-
-        string[] files = Directory.GetFiles(savePath, "*.txt");
-
-        foreach (string file in files)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file);
-
-            BookResponse response = new BookResponse();
-            response.name = fileName.Split('_')[0];
-            response.path = file;
-            response.success = true;
-
-            AddBook(response);
-        }
     }
 
     // match the closest name in the local repositry

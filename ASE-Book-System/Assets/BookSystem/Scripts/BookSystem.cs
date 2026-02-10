@@ -95,7 +95,7 @@ public class BookSystem : MonoBehaviour
         return bookRepo.RequestBook(bookName);
     }
 
-    private void ProcessBookRequest(string bookRequest)
+    public void ProcessBookRequest(string bookRequest)
     {
         Book book = GetBookFromRepositry(bookRequest);
         EndlessBook endlessBook = Instantiate(endlessBookPrefab).GetComponent<EndlessBook>();
