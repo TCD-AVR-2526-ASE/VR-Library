@@ -2,12 +2,12 @@
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
 using System.Linq;
-using System.ComponentModel;
+using System;
+using System.Diagnostics;
 
 
 [System.Serializable]
@@ -34,10 +34,12 @@ public class BookRepositry : MonoBehaviour
     // Start is called once before the first execution of U
     // pdate after the MonoBehaviour is created
 
+    public Process server;
     private Dictionary<string, Book> books;
+    private BookSystem bookSystem;
 
     private readonly string savePath = "./Assets/Resources/BookFiles";
-    private Queue<UnityWebRequestAsyncOperation> pendingRequests;
+    private Queue<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>> pendingRequests;
 
     private int bookCount => books.Count; 
     private const int MAX_CAPACITY = 100;
@@ -48,6 +50,7 @@ public class BookRepositry : MonoBehaviour
     private void Awake()
     {
         books = new Dictionary<string, Book>(MAX_CAPACITY);
+        pendingRequests = new();
 
         string[] files = Directory.GetFiles(savePath, "*.txt");
 
@@ -64,26 +67,33 @@ public class BookRepositry : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        bookSystem = FindFirstObjectByType<BookSystem>();
+        InitFlask();
+    }
+
+    private void Update()
+    {
+        if (pendingRequests == null || pendingRequests.Count == 0)
+            return;
+
+        foreach(var request in pendingRequests)
+        {
+            if (!request.Item1.isDone)
+                continue;
+
+            request.Item2(request.Item1.webRequest);
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        ShutdownFlask();
+    }
+
     public bool PingLocalhost()
     {
-        //// localhost IP
-        //string url = "127.0.0.1";
-        //string site = "/search";
-
-        //try
-        //{
-        //    using (System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping())
-        //    {
-        //        pinger.Site = site;
-        //        PingReply reply = pinger.Send(url);
-        //        return reply.Status == IPStatus.Success;
-        //    }
-        //}
-        //catch (PingException)
-        //{
-        //    return false;
-        //}
-
         string url = "http://127.0.0.1:5000/health";
 
         UnityWebRequest request = UnityWebRequest.Get(url);
@@ -95,11 +105,13 @@ public class BookRepositry : MonoBehaviour
         }
         string json = request.downloadHandler.text;
         bool request_success = request.result == UnityWebRequest.Result.Success;
-
+        UnityEngine.Debug.Log(json);
         if (!(request_success && json.Contains("ok")))
-            Debug.Log(request_success ? "failed to resolve gutenberg server": "failed to resolve flask server"); 
+            UnityEngine.Debug.Log(request_success ? "failed to resolve gutenberg server": "failed to resolve flask server"); 
         return request_success && json.Contains("ok");
         }
+
+        
 
 
     //public bool PingGutenberg() {  
@@ -110,37 +122,28 @@ public class BookRepositry : MonoBehaviour
     // try to get the book from local library if was found locally
     // if not, try to get the book from gutenberg online library
     // if not, return a null value
-    public Book RequestBook(string bookName)
+    // bool online forces an online search. Defaults to search in local repo first.
+    public void RequestBook(string bookName, bool online = false)
     {
-        Book book;
-
-        book = GetBookFromLocalLibrary(bookName);
+        Book book = null;
+        if(!online)
+            book = GetBookFromLocalLibrary(bookName);
 
         if (book == null)
         {
             var request = CreateBookWebRequest(bookName, timeoutInSec);
-
-            // -------------------- needs decoupling; This should only happen once the request comes in. -------------------- 
-            BookResponse bookResponse = GetBookFromOnlineLibrary(request.webRequest);
-
-            if (bookResponse != null && bookResponse.success)
-            {
-                book = AddBook(bookResponse, 10f);
-            }
-            else
-            {
-                return null;
-            }
+            pendingRequests.Enqueue(new Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>(request, GetBookFromOnlineLibrary));
+            return;
         }
 
         BookPaginator.ProcessBook(book);
-        return book;
+        bookSystem.ProcessBookRequest(book);
     }
 
     // the bookName is the title of the book (full lower case and spacing allowed)
     // try to get a book from local repositry books
     // if not, return a null value
-    Book GetBookFromLocalLibrary(string bookName)
+    private Book GetBookFromLocalLibrary(string bookName)
     {
         Book book;
         //MatchName(bookName);
@@ -192,7 +195,7 @@ public class BookRepositry : MonoBehaviour
     // !!!BUG!!!
     // bug at request.SendWebRequest();
     // dose not wait web response
-    private BookResponse GetBookFromOnlineLibrary(UnityWebRequest request)
+    private void GetBookFromOnlineLibrary(UnityWebRequest request)
     {
         // await request.SendWebRequest(); this will deadlock if called from Update()
         // try calling from event using .forgot()
@@ -201,10 +204,16 @@ public class BookRepositry : MonoBehaviour
         {
             string bookInfo = request.downloadHandler.text;
             BookResponse bookResponse = JsonUtility.FromJson<BookResponse>(bookInfo);
-            return bookResponse;
-        }
+            Book book;
 
-        return null;
+            if (bookResponse != null && bookResponse.success)
+                book = AddBook(bookResponse, 10f);
+            else
+                return;
+
+            BookPaginator.ProcessBook(book);
+            bookSystem.ProcessBookRequest(book);
+        }
     }
 
     // match the closest name in the local repositry
@@ -246,5 +255,44 @@ public class BookRepositry : MonoBehaviour
         }
 
         return target;
+    }
+
+    public void InitFlask()
+    {
+        var scriptPath = Application.dataPath + "/BookSystem/Scripts/Book.py";
+        var psi = new ProcessStartInfo
+        {
+            FileName = "python",
+            Arguments = $"\"{scriptPath}\"",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+
+        server = new Process();
+        server.StartInfo = psi;
+
+        server.OutputDataReceived += (sender, args) =>
+        {
+            if (!string.IsNullOrEmpty(args.Data))
+                UnityEngine.Debug.Log("[Flask Server] " + args.Data);
+        };
+
+        server.ErrorDataReceived += (sender, args) =>
+        {
+            if (!string.IsNullOrEmpty(args.Data))
+                UnityEngine.Debug.Log("[Flask Error] " + args.Data);
+        };
+
+        server.Start();
+        server.BeginOutputReadLine();
+        server.BeginErrorReadLine();
+    }
+
+    private void ShutdownFlask()
+    {
+        if(server != null && !server.HasExited)
+            server.Kill();
     }
 }

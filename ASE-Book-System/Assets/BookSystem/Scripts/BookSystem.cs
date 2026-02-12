@@ -51,7 +51,7 @@ public class BookSystem : MonoBehaviour
             while (i > 0 && requestQueue.Count > 0)
             {
                 string bookRequest = requestQueue.Dequeue();
-                ProcessBookRequest(bookRequest);
+                GetBookFromRepositry(bookRequest);
                 i--;
             }
         }
@@ -90,14 +90,13 @@ public class BookSystem : MonoBehaviour
 
     // Get one book from the local repositry
     // the bookName must matches the title of the book
-    private Book GetBookFromRepositry(string bookName)
+    public void GetBookFromRepositry(string bookName)
     {
-        return bookRepo.RequestBook(bookName);
+        bookRepo.RequestBook(bookName);
     }
 
-    public void ProcessBookRequest(string bookRequest)
+    public void ProcessBookRequest(Book book)
     {
-        Book book = GetBookFromRepositry(bookRequest);
         EndlessBook endlessBook = Instantiate(endlessBookPrefab).GetComponent<EndlessBook>();
         book.SetBookInstance(endlessBook);
         bookController.SetBook(book);

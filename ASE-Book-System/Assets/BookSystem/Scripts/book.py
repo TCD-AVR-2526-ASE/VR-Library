@@ -1,8 +1,6 @@
-import requests
+import requests, os, socket, sys, signal
 from flask import Flask, request, jsonify
-import os
 from ping3 import ping
-import socket
 
 
 
@@ -13,14 +11,18 @@ def safe_filename(name):
         c for c in name if c.isalnum() or c in (" ", "_", "-")
     ).strip()
 
-@app.route("/health", methods=["HEAD"])
+@app.route("/health", methods=["GET"])
 def health():
     try:
-        delay = ping.Ping("https://gutendex.com/books", timeout = 1000).do()
-        return {"ok"}
+        delay = ping("https://gutendex.com/books", timeout = 1000)
+        return "ok"
     except socket.error() as e:
         print("ping Error:", e)
-        return {"health not kay"}
+        return "invalid"
+
+def shutdown_handler(signum, frame):
+    print("Shutting down Flask server...")
+    sys.exit(0)
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -45,7 +47,7 @@ def search():
 
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         RESOURCES_DIR = os.path.abspath(
-            os.path.join(BASE_DIR, "..", "..", "Assets\Resources")
+            os.path.join(BASE_DIR, "..", "..", "Assets/Resources")
         )
 
         os.makedirs(RESOURCES_DIR, exist_ok=True)
@@ -108,4 +110,8 @@ def download_gutenberg_txt(book_id, save_path):
     print(f"Successfully downloaded at:",save_path)
     return save_path
 
-app.run(port=5000)
+if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, shutdown_handler)
+    signal.signal(signal.SIGINT, shutdown_handler)
+
+    app.run(port=5000)
