@@ -263,7 +263,7 @@ public class BookRepositry : MonoBehaviour
         var psi = new ProcessStartInfo
         {
             FileName = "python",
-            Arguments = $"\"{scriptPath}\"",
+            Arguments = $"server.py \"{Application.dataPath}\"",
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
