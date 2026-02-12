@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
 using System.Linq;
+using System.ComponentModel;
 
 
 [System.Serializable]
@@ -65,26 +66,45 @@ public class BookRepositry : MonoBehaviour
 
     public bool PingLocalhost()
     {
-        // localhost IP
-        string url = "127.0.0.1";
+        //// localhost IP
+        //string url = "127.0.0.1";
+        //string site = "/search";
 
-        try
-        {
-            using (System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping())
-            {
-                PingReply reply = pinger.Send(url);
-                return reply.Status == IPStatus.Success;
-            }
-        }
-        catch (PingException)
-        {
-            return false;
-        }
-    }
+        //try
+        //{
+        //    using (System.Net.NetworkInformation.Ping pinger = new System.Net.NetworkInformation.Ping())
+        //    {
+        //        pinger.Site = site;
+        //        PingReply reply = pinger.Send(url);
+        //        return reply.Status == IPStatus.Success;
+        //    }
+        //}
+        //catch (PingException)
+        //{
+        //    return false;
+        //}
 
-    public bool PingGutenberg() {  
-        return false; 
-    }
+        string url = "http://127.0.0.1:5000/health";
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        request.timeout = 2;
+        var updater = request.SendWebRequest();
+        while (!updater.isDone)
+        {
+
+        }
+        string json = request.downloadHandler.text;
+        bool request_success = request.result == UnityWebRequest.Result.Success;
+
+        if (!(request_success && json.Contains("ok")))
+            Debug.Log(request_success ? "failed to resolve gutenberg server": "failed to resolve flask server"); 
+        return request_success && json.Contains("ok");
+        }
+
+
+    //public bool PingGutenberg() {  
+    //    return false; 
+    //}
 
     // the bookName is the title of the book (full lower case and spacing allowed)
     // try to get the book from local library if was found locally

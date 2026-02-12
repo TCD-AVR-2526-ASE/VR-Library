@@ -1,6 +1,10 @@
 import requests
 from flask import Flask, request, jsonify
 import os
+from ping3 import ping
+import socket
+
+
 
 app = Flask(__name__)
 
@@ -9,6 +13,14 @@ def safe_filename(name):
         c for c in name if c.isalnum() or c in (" ", "_", "-")
     ).strip()
 
+@app.route("/health", methods=["HEAD"])
+def health():
+    try:
+        delay = ping.Ping("https://gutendex.com/books", timeout = 1000).do()
+        return {"ok"}
+    except socket.error() as e:
+        print("ping Error:", e)
+        return {"health not kay"}
 
 @app.route("/search", methods=["POST"])
 def search():

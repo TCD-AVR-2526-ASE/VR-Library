@@ -35,14 +35,7 @@ public class BookSystemLoaderTesting
         Assert.IsTrue(repo.PingLocalhost());
     }
 
-    [Test]
-    // Test the connection to Gutenberg.
-    // Important to NOT MANUALLY RUN the backend!!!
-    // [will probably require an extra function in the py backend]
-    public void ConnectToGutenberg()
-    {
-        Assert.IsTrue(repo.PingGutenberg());
-    }
+    
 
     [Test]
     // Test asynchronicity of the request; Try performing a basic operation
