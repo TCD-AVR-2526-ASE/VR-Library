@@ -5,7 +5,6 @@ from ping3 import ping
 
 
 app = Flask(__name__)
-uassetpath = sys.argv[0]
 
 def safe_filename(name):
     return "".join(
@@ -46,8 +45,9 @@ def search():
     if book_id:
         safe_name = safe_filename(book_name)
 
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         RESOURCES_DIR = os.path.abspath(
-            os.path.join(uassetpath, "Resources")
+            os.path.join(BASE_DIR, "..", "..", "Resources/BookFiles")
         )
 
         print(RESOURCES_DIR)

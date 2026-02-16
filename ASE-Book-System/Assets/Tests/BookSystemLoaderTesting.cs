@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Diagnostics;
 using UnityEngine.Networking;
+using UnityEngine.Windows;
 
 public class BookSystemLoaderTesting
 {
@@ -30,6 +31,7 @@ public class BookSystemLoaderTesting
     {
         repo.InitFlask();
         Assert.IsTrue(!repo.server.HasExited);
+        repo.ShutdownFlask();
     }
 
 
@@ -38,7 +40,9 @@ public class BookSystemLoaderTesting
     // if ping doesn't return within timeout, test fails.
     public void ConnectToLocalhost()
     {
+        repo.InitFlask();
         Assert.IsTrue(repo.PingLocalhost());
+        repo.ShutdownFlask();
     }
 
     
@@ -49,6 +53,7 @@ public class BookSystemLoaderTesting
     // fails if the operation doesn't perform.
     public void DoSomethingWhileAwaitingRequest()
     {
+        repo.InitFlask();
         Assert.IsTrue(repo.PingLocalhost());
             
         string bogusTitle = "dwiuabdaisndpoiandosadqa";
@@ -56,6 +61,7 @@ public class BookSystemLoaderTesting
         repo.RequestBook(bogusTitle, true);
         a += 1;
         Assert.AreEqual(a, 2);
+        repo.ShutdownFlask();
     }
 
     [Test]
@@ -64,6 +70,7 @@ public class BookSystemLoaderTesting
     // Fails if the function runs longer than timeout after request sending.
     public void TimeoutOnBadRequest()
     {
+        repo.InitFlask();
         Assert.IsTrue(repo.PingLocalhost());
 
         string bogusTitle = "aidnaindsiajbfijdynfpsad";
@@ -79,6 +86,7 @@ public class BookSystemLoaderTesting
         timer.Stop();
 
         Assert.LessOrEqual(timer.Elapsed.Seconds, (float) timeout + frameBufferTolerance);
+        repo.ShutdownFlask();
     }
 
     [Test]
@@ -86,7 +94,11 @@ public class BookSystemLoaderTesting
     // Succeeds if the file exists in the Assets/Resources/BookFiles folder.
     public void TestRealRequest()
     {
-        string title = "1984";
+        repo.InitFlask();
+        Assert.IsTrue(repo.PingLocalhost());
+
+        string title = "The Great Gatsby";
+        string expectedFile = "The Great Gatsby_64317.txt";
         UnityWebRequestAsyncOperation request;
         var timer = new Stopwatch();
         request = repo.CreateBookWebRequest(title, timeout);
@@ -99,7 +111,10 @@ public class BookSystemLoaderTesting
 
         Assert.Less(timer.Elapsed.Seconds, (float) timeout);
         Assert.IsTrue(request.webRequest.result == UnityWebRequest.Result.Success);
+        //UnityEngine.Debug.Log(Application.dataPath + "/Resources/BookFiles/" + expectedFile);
+        Assert.IsTrue(File.Exists(Application.dataPath + "/Resources/BookFiles/" + expectedFile));
 
         request.webRequest.Dispose();
+        repo.ShutdownFlask();
     }
 }

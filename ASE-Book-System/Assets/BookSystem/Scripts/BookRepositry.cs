@@ -263,7 +263,7 @@ public class BookRepositry : MonoBehaviour
         var psi = new ProcessStartInfo
         {
             FileName = "python",
-            Arguments = $"server.py \"{Application.dataPath}\"",
+            Arguments = $"\"{scriptPath}\"",
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
@@ -290,7 +290,7 @@ public class BookRepositry : MonoBehaviour
         server.BeginErrorReadLine();
     }
 
-    private void ShutdownFlask()
+    public void ShutdownFlask()
     {
         if(server != null && !server.HasExited)
             server.Kill();
