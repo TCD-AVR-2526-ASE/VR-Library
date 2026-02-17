@@ -4,17 +4,10 @@
 
     <select id="selectAdminPage" resultType="edu.tcd.library.admin.entity.UmsAdminExtend">
         SELECT
-        a.*,
-        d.id as dept_id,
-        d.name as dept_name
+        a.*
         FROM ums_admin a
-        LEFT JOIN ums_admin_dept_relation ad ON a.id = ad.admin_id
-        LEFT JOIN ums_dept d ON ad.dept_id = d.id
         WHERE
         1=1
-        <if test="deptId!=null">
-            AND d.id =#{deptId}
-        </if>
         <if test="keyword!=null and ''!=keyword">
             AND (
             a.username LIKE CONCAT(CONCAT('%', #{keyword}), '%')

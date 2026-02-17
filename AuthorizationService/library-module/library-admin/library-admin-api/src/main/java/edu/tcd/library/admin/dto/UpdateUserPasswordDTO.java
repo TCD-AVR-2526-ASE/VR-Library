@@ -5,12 +5,10 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Parameters for updating administrator password
- */
+
 @Getter
 @Setter
-public class UpdateAdminPasswordDTO {
+public class UpdateUserPasswordDTO {
 
     @NotEmpty
     @Schema(description = "Username", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -23,5 +21,4 @@ public class UpdateAdminPasswordDTO {
     @NotEmpty
     @Schema(description = "New password", requiredMode = Schema.RequiredMode.REQUIRED)
     private String newPassword;
-
 }

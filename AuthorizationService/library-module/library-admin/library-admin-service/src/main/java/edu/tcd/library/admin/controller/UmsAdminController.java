@@ -1,8 +1,10 @@
 package edu.tcd.library.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
-import edu.tcd.library.admin.dto.UpdateAdminPasswordDTO;
+import edu.tcd.library.admin.dto.UpdatePasswordByAdminDTO;
+import edu.tcd.library.admin.dto.UpdateUserPasswordDTO;
 import edu.tcd.library.admin.entity.UmsAdmin;
 import edu.tcd.library.admin.entity.UmsAdminExtend;
 import edu.tcd.library.admin.entity.UmsRole;
@@ -13,7 +15,6 @@ import edu.tcd.library.common.core.api.CommonResult;
 import edu.tcd.library.common.core.domain.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,15 +59,16 @@ public class UmsAdminController {
         return CommonResult.judge(updated);
     }
 
-    @Operation(summary = "change password")
+    @Operation(summary = "admin change password")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    public CommonResult<Boolean> updatePassword(@RequestBody UpdateAdminPasswordDTO param) {
+    public CommonResult<Boolean> updatePassword(@RequestBody UpdatePasswordByAdminDTO param) {
         return adminService.updatePassword(param);
     }
 
     @Operation(summary = "change password")
     @RequestMapping(value = "/updateMyPassword", method = RequestMethod.POST)
-    public CommonResult<Boolean> updateMyPassword(@RequestBody UpdateAdminPasswordDTO param) {
+    @SaCheckLogin
+    public CommonResult<Boolean> updateMyPassword(@RequestBody UpdateUserPasswordDTO param) {
         return adminService.updateMyPassword(param);
     }
 
@@ -78,14 +80,13 @@ public class UmsAdminController {
 
     @Operation(summary = "get user list")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public CommonResult<CommonPage<UmsAdminExtend>> list(@RequestParam(value = "deptId", required = false) Long deptId,
-                                                         @RequestParam(value = "keyword", required = false) String keyword,
+    public CommonResult<CommonPage<UmsAdminExtend>> list(@RequestParam(value = "keyword", required = false) String keyword,
                                                          @RequestParam(value = "nickName", required = false) String nickName,
                                                          @RequestParam(value = "userName", required = false) String userName,
                                                          @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         Page<UmsAdminExtend> page = new Page<>(pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(adminService.selectPage(deptId, keyword, nickName, userName, page)));
+        return CommonResult.success(CommonPage.restPage(adminService.selectPage(keyword, nickName, userName, page)));
     }
 
     @Operation(summary = "get information by username")

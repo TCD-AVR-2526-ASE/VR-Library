@@ -7,20 +7,18 @@ import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.extra.spring.SpringUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
-import edu.tcd.library.admin.dto.UpdateAdminPasswordDTO;
-import edu.tcd.library.admin.entity.*;
+import edu.tcd.library.admin.dto.UpdatePasswordByAdminDTO;
+import edu.tcd.library.admin.dto.UpdateUserPasswordDTO;
 import edu.tcd.library.admin.entity.UmsAdmin;
 import edu.tcd.library.admin.entity.UmsAdminExtend;
 import edu.tcd.library.admin.entity.UmsAdminRoleRelation;
 import edu.tcd.library.admin.entity.UmsRole;
 import edu.tcd.library.admin.mapper.UmsAdminMapper;
-import edu.tcd.library.admin.service.*;
 import edu.tcd.library.admin.service.UmsAdminCacheService;
 import edu.tcd.library.admin.service.UmsAdminRoleRelationService;
 import edu.tcd.library.admin.service.UmsAdminService;
@@ -121,7 +119,7 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
 
         //set user default role as a guest
         LambdaQueryWrapper<UmsRole> wrapper = Wrappers.lambdaQuery(UmsRole.class);
-        wrapper.eq(UmsRole::getCode, "Guest");
+        wrapper.eq(UmsRole::getCode, "Member");
         UmsRole guestRole = roleService.getOne(wrapper);
         Assert.notNull(guestRole, "Cannot get Guest role in the system!");
         this.roleService.userAuth(guestRole.getId(), Collections.singletonList(umsAdmin.getId()));
@@ -160,15 +158,34 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
     }
 
     @Override
-    public CommonResult<Boolean> updatePassword(UpdateAdminPasswordDTO param) {
+    public CommonResult<Boolean> updatePassword(UpdatePasswordByAdminDTO param) {
+        LambdaQueryWrapper<UmsAdmin> lambda = new LambdaQueryWrapper<>();
+        lambda.eq(UmsAdmin::getUsername, param.getUsername());
+        List<UmsAdmin> adminList = this.baseMapper.selectList(lambda);
+        if (CollUtil.isEmpty(adminList)) {
+            return CommonResult.failed("User not found");
+        }
+        UmsAdmin umsAdmin = adminList.get(0);
+        umsAdmin.setPassword(BCrypt.hashpw(param.getNewPassword()));
+        this.baseMapper.update(umsAdmin, lambda);
+        getCacheService().delAdmin(umsAdmin.getId());
+        return CommonResult.success(true);
+    }
+
+    @Override
+    public CommonResult<Boolean> updateMyPassword(UpdateUserPasswordDTO param) {
         if (StrUtil.isEmpty(param.getUsername())
                 || StrUtil.isEmpty(param.getOldPassword())
                 || StrUtil.isEmpty(param.getNewPassword())) {
             return CommonResult.failed("Invalid submission parameters");
         }
+        UserDto userDto = SecurityUtils.getUserCache();
+        UmsAdmin cacheUser = getCurrentAdmin(userDto.getId());
+        if (!cacheUser.getUsername().equals(param.getUsername())) {
+            return CommonResult.failed("You can only modify your own password!");
+        }
         LambdaQueryWrapper<UmsAdmin> lambda = new LambdaQueryWrapper<>();
         lambda.eq(UmsAdmin::getUsername, param.getUsername());
-
         List<UmsAdmin> adminList = this.baseMapper.selectList(lambda);
         if (CollUtil.isEmpty(adminList)) {
             return CommonResult.failed("User not found");
@@ -179,18 +196,8 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         }
         umsAdmin.setPassword(BCrypt.hashpw(param.getNewPassword()));
         this.baseMapper.update(umsAdmin, lambda);
-//        getCacheService().delAdmin(umsAdmin.getId());
+        getCacheService().delAdmin(umsAdmin.getId());
         return CommonResult.success(true);
-    }
-
-    @Override
-    public CommonResult<Boolean> updateMyPassword(UpdateAdminPasswordDTO param) {
-        UserDto userDto = SecurityUtils.getUserCache();
-        UmsAdmin umsAdmin = getCurrentAdmin(userDto.getId());
-        if (!umsAdmin.getUsername().equals(param.getUsername())) {
-            return CommonResult.failed("You can only modify your own password!");
-        }
-        return updatePassword(param);
     }
 
     @Override
@@ -251,8 +258,8 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
 
 
     @Override
-    public Page<UmsAdminExtend> selectPage(Long deptId, String keyword, String nickName, String userName, Page<UmsAdminExtend> page) {
-        Page<UmsAdminExtend> umsAdminPage = this.baseMapper.selectAdminPage(page, deptId, nickName, userName, keyword);
+    public Page<UmsAdminExtend> selectPage(String keyword, String nickName, String userName, Page<UmsAdminExtend> page) {
+        Page<UmsAdminExtend> umsAdminPage = this.baseMapper.selectAdminPage(page,nickName, userName, keyword);
         List<UmsAdminExtend> records = umsAdminPage.getRecords();
         for (UmsAdminExtend admin : records) {
             if (StrUtil.isNotEmpty(admin.getIcon())) {

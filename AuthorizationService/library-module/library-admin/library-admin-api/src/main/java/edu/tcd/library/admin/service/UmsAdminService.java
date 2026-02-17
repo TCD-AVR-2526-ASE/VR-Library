@@ -3,7 +3,8 @@ package edu.tcd.library.admin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
-import edu.tcd.library.admin.dto.UpdateAdminPasswordDTO;
+import edu.tcd.library.admin.dto.UpdatePasswordByAdminDTO;
+import edu.tcd.library.admin.dto.UpdateUserPasswordDTO;
 import edu.tcd.library.admin.entity.UmsAdmin;
 import edu.tcd.library.admin.entity.UmsAdminExtend;
 import edu.tcd.library.admin.entity.UmsRole;
@@ -68,7 +69,7 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      * @param param Password update parameters
      * @return CommonResult indicating the operation status
      */
-    CommonResult<Boolean> updatePassword(UpdateAdminPasswordDTO param);
+    CommonResult<Boolean> updatePassword(UpdatePasswordByAdminDTO param);
 
     /**
      * Update the currently logged-in user's own password
@@ -76,7 +77,7 @@ public interface UmsAdminService extends IService<UmsAdmin> {
      * @param param Password update parameters
      * @return CommonResult indicating the operation status
      */
-    CommonResult<Boolean> updateMyPassword(UpdateAdminPasswordDTO param);
+    CommonResult<Boolean> updateMyPassword(UpdateUserPasswordDTO param);
 
     /**
      * Get information for the currently logged-in user
@@ -96,14 +97,13 @@ public interface UmsAdminService extends IService<UmsAdmin> {
     /**
      * Query user list with pagination and filters
      *
-     * @param deptId   Department ID
      * @param keyword  General keyword for search
      * @param nickName Search by nickname
      * @param userName Search by username
      * @param page     Pagination criteria
      * @return A paged list of extended admin information
      */
-    Page<UmsAdminExtend> selectPage(Long deptId, String keyword, String nickName,
+    Page<UmsAdminExtend> selectPage( String keyword, String nickName,
                                     String userName, Page<UmsAdminExtend> page);
 
     /**

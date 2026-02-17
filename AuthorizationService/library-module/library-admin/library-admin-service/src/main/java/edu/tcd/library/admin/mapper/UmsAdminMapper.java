@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface UmsAdminMapper extends BaseMapper<UmsAdmin> {
 
-    Page<UmsAdminExtend> selectAdminPage(Page<UmsAdminExtend> page, @Param("deptId") Long deptId,
+    Page<UmsAdminExtend> selectAdminPage(Page<UmsAdminExtend> page,
                                          @Param("keyword") String keyword,
                                          @Param("nickName") String nickName,
                                          @Param("userName") String userName);

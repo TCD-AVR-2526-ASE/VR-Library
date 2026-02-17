@@ -42,6 +42,7 @@
         <minio.version>8.5.6</minio.version>
         <jna.version>5.11.0</jna.version>
         <ssh2.version>262</ssh2.version>
+        <mail.version>1.6.2</mail.version>
     </properties>
 
 
@@ -126,6 +127,12 @@
                 <groupId>ch.ethz.ganymed</groupId>
                 <artifactId>ganymed-ssh2</artifactId>
                 <version>${ssh2.version}</version>
+            </dependency>
+            <!-- mail send -->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${mail.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

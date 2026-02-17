@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.util.ClassUtils;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 
@@ -26,15 +27,15 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
         fillValIfNullByName("createTime", now, metaObject, true);
         fillValIfNullByName("updateTime", now, metaObject, true);
-        fillValIfNullByName("createBy", getUserName(), metaObject, true);
-        fillValIfNullByName("updateBy", getUserName(), metaObject, true);
+        fillValIfNullByName("createBy", getUserId(), metaObject, true);
+        fillValIfNullByName("updateBy", getUserId(), metaObject, true);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.debug("mybatis plus start update fill ....");
         fillValIfNullByName("updateTime", LocalDateTime.now(), metaObject, true);
-        fillValIfNullByName("updateBy", getUserName(), metaObject, true);
+        fillValIfNullByName("updateBy", getUserId(), metaObject, true);
     }
 
     private static void fillValIfNullByName(String fieldName, Object fieldVal, MetaObject metaObject, boolean isCover) {
@@ -67,6 +68,19 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
             return null;
         }
         return userDto.getUsername();
+    }
+
+    /**
+     * get current user id
+     *
+     * @return
+     */
+    private Long getUserId() {
+        UserDto userDto = SecurityUtils.getUserCache();
+        if (userDto == null) {
+            return null;
+        }
+        return userDto.getId();
     }
 
 }
