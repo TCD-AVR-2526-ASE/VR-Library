@@ -10,7 +10,7 @@ public class BookSystemLoaderTesting
     private BookPaginator paginator;
     private BookController controller;
     private BookRenderer renderer;
-    private BookRepositry repo;
+    private BookRepository repo;
 
     float frameBufferTolerance = 0.035f;
     int timeout = 10;
@@ -23,7 +23,7 @@ public class BookSystemLoaderTesting
         paginator = obj.AddComponent<BookPaginator>();
         controller = obj.AddComponent<BookController>();
         renderer = obj.AddComponent<BookRenderer>();
-        repo = obj.GetComponent<BookRepositry>();
+        repo = obj.GetComponent<BookRepository>();
     }
 
     [Test]

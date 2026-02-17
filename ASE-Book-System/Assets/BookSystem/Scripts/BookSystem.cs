@@ -14,7 +14,7 @@ public class BookSystem : MonoBehaviour
     private readonly int MAX_REQUEST = 30;
 
     // the book subsystems
-    private BookRepositry bookRepo;
+    private BookRepository bookRepo;
     private BookController bookController;
     private BookRenderer bookRenderer;
 
@@ -27,7 +27,7 @@ public class BookSystem : MonoBehaviour
     // instantiate the render queue and loading queue
     private void Awake()
     {
-        bookRepo = gameObject.AddComponent<BookRepositry>();
+        bookRepo = gameObject.AddComponent<BookRepository>();
         requestQueue = new Queue<string>();
         renderQueue = new Queue<Book>();
     }
