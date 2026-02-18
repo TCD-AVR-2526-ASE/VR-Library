@@ -65,7 +65,7 @@ public class BookPaginator : MonoBehaviour
                 {
                     if (IsNiceBreakChar(line[i]))
                     {
-                        breakPos = i + 1; // ��������ָ��
+                        breakPos = i + 1; // break up line after the break character.
                         break;
                     }
                 }
