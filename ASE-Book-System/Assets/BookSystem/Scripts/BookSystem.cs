@@ -9,7 +9,7 @@ public class BookSystem : MonoBehaviour
     private Queue<Book> renderQueue;
 
     /// <summary>
-    /// the max number of requests processed per frame
+    /// the max number of requests that can be processed per frame
     /// </summary>
     private readonly int MAX_REQUEST = 30;
 
@@ -33,8 +33,7 @@ public class BookSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// This contains a test for "stress-testing" the book request system by asking for a gibberish book.\n
-    /// Contingent on all BookSystem components being instantiated.
+    /// Initializes the bookController and bookRenderer for Book Processing
     /// </summary>
     private void Start()
     {
@@ -42,8 +41,10 @@ public class BookSystem : MonoBehaviour
         bookRenderer = FindFirstObjectByType<BookRenderer>();
     }
 
-    // the main to handle the book request for asking book
-    // or the render request for rendering the new book pages
+    /// <summary>
+    /// the main to handle the book request for asking book<br></br>
+    /// or the render request for rendering the new book pages
+    /// </summary>
     void Update()
     {
         if (requestQueue.Count != 0) {
@@ -80,7 +81,7 @@ public class BookSystem : MonoBehaviour
 
     /// <summary>
     /// Add one book loading request to the tail of the loading queue<br></br>
-    /// the bookRequest must exactly match the title of the book.
+    /// the bookRequest exact/partial match the title of the book.
     /// </summary>
     /// <param name="bookRequest"></param>
     public void AddBookRequest(string bookRequest)
@@ -95,6 +96,12 @@ public class BookSystem : MonoBehaviour
         bookRepo.RequestBook(bookName);
     }
 
+    /// <summary>
+    /// Instantiate the book prefab<br></br>
+    /// set the book prefab to the book controller<br></br>
+    /// display the book prefab
+    /// </summary>
+    /// <param name="book"></param>
     public void ProcessBookRequest(Book book)
     {
         EndlessBook endlessBook = Instantiate(endlessBookPrefab).GetComponent<EndlessBook>();
