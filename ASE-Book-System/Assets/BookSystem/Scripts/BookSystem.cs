@@ -28,6 +28,7 @@ public class BookSystem : MonoBehaviour
     private void Awake()
     {
         bookRepo = gameObject.AddComponent<BookRepository>();
+        endlessBookPrefab = Resources.Load<GameObject>("BookSystem/Prefabs/Book");
         requestQueue = new Queue<string>();
         renderQueue = new Queue<Book>();
     }
