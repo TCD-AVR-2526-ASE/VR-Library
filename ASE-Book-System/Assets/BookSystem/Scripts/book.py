@@ -133,10 +133,9 @@ def find_book(name):
     headers = {"User-Agent": "Mozilla/5.0"}
 
     response = requests.get(url, params=params, headers=headers)
+    r = response.json()
 
     if r:
-        r = response.json()
-
         if r["results"]:
             id = r["results"][0]["id"]
 

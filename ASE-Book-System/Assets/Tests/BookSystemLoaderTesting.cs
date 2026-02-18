@@ -111,7 +111,6 @@ public class BookSystemLoaderTesting
 
         Assert.Less(timer.Elapsed.Seconds, (float) timeout);
         Assert.IsTrue(request.webRequest.result == UnityWebRequest.Result.Success);
-        //UnityEngine.Debug.Log(Application.dataPath + "/Resources/BookFiles/" + expectedFile);
         Assert.IsTrue(File.Exists(Application.dataPath + "/Resources/BookFiles/" + expectedFile));
 
         request.webRequest.Dispose();
