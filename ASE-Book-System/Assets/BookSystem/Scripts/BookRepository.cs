@@ -109,7 +109,7 @@ public class BookRepository : MonoBehaviour
         if (pendingRequests == null || pendingRequests.Count == 0)
             return;
 
-        var clearList = new List<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>>();
+        List<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>> clearList = new();
         foreach(var request in pendingRequests)
         {
             if (!request.Item1.isDone)
@@ -120,9 +120,7 @@ public class BookRepository : MonoBehaviour
         }
 
         foreach(var request in clearList)
-        {
             pendingRequests.Remove(request);
-        }
 
         clearList.Clear();
     }
