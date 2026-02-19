@@ -59,7 +59,7 @@ public class BookRepository : MonoBehaviour
     /// <summary>
     /// A queue of tuples representing web requests awaiting a response, and a function to be called as soon as the response comes in.
     /// </summary>
-    private Queue<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>> pendingRequests;
+    private List<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>> pendingRequests;
 
     /// <summary>
     /// A field outputting the amount of books currently in storage.
@@ -109,13 +109,22 @@ public class BookRepository : MonoBehaviour
         if (pendingRequests == null || pendingRequests.Count == 0)
             return;
 
+        var clearList = new List<Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>>();
         foreach(var request in pendingRequests)
         {
             if (!request.Item1.isDone)
                 continue;
 
             request.Item2(request.Item1.webRequest);
+            clearList.Add(request);
         }
+
+        foreach(var request in clearList)
+        {
+            pendingRequests.Remove(request);
+        }
+
+        clearList.Clear();
     }
 
     // Close the Flask server cleanly when exiting the app/game.
@@ -167,7 +176,7 @@ public class BookRepository : MonoBehaviour
         {
             // automatically sends a book request.
             var request = CreateBookWebRequest(bookName, timeoutInSec);
-            pendingRequests.Enqueue(new Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>(request, GetBookFromOnlineLibrary));
+            pendingRequests.Add(new Tuple<UnityWebRequestAsyncOperation, Action<UnityWebRequest>>(request, GetBookFromOnlineLibrary));
             return;
         }
 
