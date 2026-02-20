@@ -51,7 +51,7 @@ public class UmsRoleController {
     @Operation(summary ="batch delete role")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public CommonResult<Boolean> delete(@RequestParam("ids") List<Long> ids) {
-        boolean deleted = roleService.removeByIds(ids);
+        boolean deleted = roleService   .removeByIds(ids);
         return CommonResult.judge(deleted);
     }
 

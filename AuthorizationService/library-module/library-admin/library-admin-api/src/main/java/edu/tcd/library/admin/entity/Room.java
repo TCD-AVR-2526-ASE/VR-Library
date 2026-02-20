@@ -34,16 +34,16 @@ public class Room implements Serializable {
     private String SceneName;
 
     @Schema(description = "Room Max Players")
-    @JsonProperty(value = "MaxPlayer")
-    private Integer MaxPlayer;
+    @JsonProperty(value = "MaxPlayers")
+    private Integer MaxPlayers;
 
     @Schema(description = "Room Status")
     @JsonProperty(value = "Status")
     private Integer Status;
 
     @Schema(description = "Room Last Update Timestamp")
-    @JsonProperty(value = "LastUpdatedUTC")
-    private Long LastUpdatedUTC;
+    @JsonProperty(value = "LastUpdatedUtc")
+    private Long LastUpdatedUtc;
 
     @Schema(description = "Room Endpoint")
     @JsonProperty(value = "Endpoint")

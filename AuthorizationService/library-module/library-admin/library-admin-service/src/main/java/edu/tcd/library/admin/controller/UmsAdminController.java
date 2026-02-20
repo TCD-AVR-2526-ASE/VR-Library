@@ -55,7 +55,7 @@ public class UmsAdminController {
                                               @RequestParam(value = "status") Integer status) {
         UmsAdmin umsAdmin = adminService.getById(id);
         umsAdmin.setStatus(status);
-        boolean updated = adminService.save(umsAdmin);
+        boolean updated = adminService.updateById(umsAdmin);
         return CommonResult.judge(updated);
     }
 
