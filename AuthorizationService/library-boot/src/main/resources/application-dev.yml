@@ -16,7 +16,7 @@ spring:
       host: 127.0.0.1
       database: 10
       port: 6379
-      password: geoscene123
+      password: macro123
       timeout: 3000ms
       lettuce:
         pool:

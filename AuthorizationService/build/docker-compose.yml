@@ -1,0 +1,54 @@
+version: '3'
+
+networks:
+  survey-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: 'bitnami/postgresql:latest'
+    container_name: postgres
+    restart: always
+    privileged: true
+    networks:
+      - survey-network
+    ports:
+      - 5432:5432
+    volumes:
+      - '/Users/dodge/mydata/postgresql/data:/bitnami/postgresql/data'
+      - '/Users/dodge/mydata/postgresql/initdb:/docker-entrypoint-initdb.d'
+    environment:
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=root
+      - POSTGRESQL_DATABASE=root
+      - POSTGRESQL_LOG_TIMEZONE=Europe/Dublin
+      - POSTGRESQL_TIMEZONE=Europe/Dublin
+  redis:
+    image: redis:7
+    container_name: redis
+    command: redis-server --requirepass "macro123"  --appendonly yes
+    restart: always
+    networks:
+      - survey-network
+    volumes:
+      - /Users/dodge/mydata/redis/data:/data
+    ports:
+      - 6379:6379
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    networks:
+      - survey-network
+    environment:
+      - "MINIO_ACCESS_KEY=minioadmin"
+      - "MINIO_SECRET_KEY=minioadmin"
+      - TZ=Europe/Dublin
+    volumes:
+      - /Users/dodge/mydata/minio/nfs:/data
+      - /Users/dodge/mydata/minio/config:/root/.minio
+    command: server --console-address ':9001' /data
+    privileged: true
+    restart: always
+    ports:
+      - 9000:9000
+      - 9001:9001

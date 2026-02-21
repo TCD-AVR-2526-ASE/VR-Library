@@ -207,6 +207,24 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.43.4</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>vr-library-backend:${project.version}</name>
+                            <build>
+                                <contextDir>${project.basedir}</contextDir>
+                                <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
