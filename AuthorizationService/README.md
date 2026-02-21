@@ -13,20 +13,9 @@ This document outlines the standard operating procedures for deploying the VR-Li
 - Install **Docker Desktop**: [Download Here](https://www.docker.com/products/docker-desktop/)
 - Ensure Docker Desktop is running (the whale icon in your system tray must be green).
 - **WSL2** must be enabled if you are using Windows.
+- Ensure your computer has Maven and Java 17+ Environment
 
-### 2. Database Initialization
-
-Before spinning up the cluster, you must initialize the local MySQL database.
-
-1. Navigate to the database script directory:
-
-    ```
-    cd build/db
-    ```
-
-2. Execute the provided `.sql` files in your preferred local database GUI (e.g., Navicat, DataGrip) to generate the schemas. *(If using the full docker-compose, this mounts automatically to `/docker-entrypoint-initdb.d`)*.
-
-### 3. Env Cluster Boot
+### 2. Database Initialization and Env Cluster Boot
 
 1. Navigate to the `build` directory:
 
@@ -39,9 +28,19 @@ Before spinning up the cluster, you must initialize the local MySQL database.
     ```
     docker-compose up -d
     ```
-### 4. Container Image Building (For CI/CD & Releases)
+Before spinning up the cluster, you must initialize the local database in PostgreSQL.
 
-*If you are responsible for packaging the final delivery artifacts:*
+1. Navigate to the database script directory:
+
+    ```
+    cd build/db
+    ```
+
+2. Execute the provided `.sql` files in your preferred local database GUI (e.g., Navicat, DataGrip) to generate the schemas. *(If using the full docker-compose, this mounts automatically to `/docker-entrypoint-initdb.d`)*.
+
+### 3. Container Image Building (For CI/CD & Releases)
+
+*This Step is optional, you can get the Docker Image from me, or if you are responsible for packaging the final delivery artifacts or try to deploy this package by yourself, you can definitely package it for yourself.*
 
 **Stage 1: Global Compilation**
 
