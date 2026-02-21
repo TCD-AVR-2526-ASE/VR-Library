@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.tcd.library.admin.mapper.UmsAdminMapper">
+
+    <select id="selectAdminPage" resultType="edu.tcd.library.admin.entity.UmsAdminExtend">
+        SELECT
+        a.*
+        FROM ums_admin a
+        WHERE
+        1=1
+        <if test="keyword!=null and ''!=keyword">
+            AND (
+            a.username LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            OR
+            a.nick_name LIKE CONCAT(CONCAT('%', #{keyword}), '%')
+            )
+        </if>
+        <if test="nickName!=null and nickName!=''">
+            and a.username like CONCAT(CONCAT('%', #{nickName}), '%')
+        </if>
+        <if test="userName!=null and userName!=''">
+            and a.nick_name like CONCAT(CONCAT('%', #{userName}), '%')
+        </if>
+        ORDER BY a.sort
+    </select>
+</mapper>

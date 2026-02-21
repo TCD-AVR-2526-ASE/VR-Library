@@ -1,0 +1,2 @@
+edu.tcd.library.common.security.config.SaTokenConfigure
+edu.tcd.library.common.security.config.IgnoreUrlsConfig
