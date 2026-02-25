@@ -17,6 +17,7 @@ public class BookSystem : MonoBehaviour
     private BookRepository bookRepo;
     private BookController bookController;
     private BookRenderer bookRenderer;
+    private Camera targetCamera;
 
     /// <summary>
     /// the prefab used to instantiate book objects in the scene.
@@ -29,6 +30,7 @@ public class BookSystem : MonoBehaviour
     {
         bookRepo = gameObject.AddComponent<BookRepository>();
         endlessBookPrefab = Resources.Load<GameObject>("BookSystem/Prefabs/Book");
+
         requestQueue = new Queue<string>();
         renderQueue = new Queue<Book>();
     }
@@ -105,7 +107,13 @@ public class BookSystem : MonoBehaviour
     /// <param name="book"></param>
     public void ProcessBookRequest(Book book)
     {
-        EndlessBook endlessBook = Instantiate(endlessBookPrefab).GetComponent<EndlessBook>();
+        float spawnDepth = 5f;
+        targetCamera = Camera.main;
+        Vector3 viewportCenter = new Vector3(0.5f, 0.5f, spawnDepth);
+        Debug.Log(viewportCenter);
+        Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
+        EndlessBook endlessBook = Instantiate(endlessBookPrefab, spawnPosition, Quaternion.identity).GetComponent<EndlessBook>();
+
         book.SetBookInstance(endlessBook);
         bookController.SetBook(book);
         bookRenderer.DisplayCurrent(book);

@@ -24,16 +24,16 @@ public class BookController : MonoBehaviour
     void Update()
     {
         if (book == null) return;
-        if (Keyboard.current.spaceKey.isPressed) {
+        if (Mouse.current.middleButton.isPressed) {
             book.ToggleBookOpening();
             bookSystem.AddRenderRequest(book);
         }
-        else if (Keyboard.current.qKey.wasPressedThisFrame)
+        else if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             book.TurnPage(false);
             bookSystem.AddRenderRequest(book);
         }
-        else if (Keyboard.current.eKey.wasPressedThisFrame)
+        else if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             book.TurnPage(true);
             bookSystem.AddRenderRequest(book);

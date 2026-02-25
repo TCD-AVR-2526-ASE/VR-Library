@@ -199,7 +199,7 @@ public class BookRepository : MonoBehaviour
     /// <param name="bookResponse">The struct containing the output of the Flask query.</param>
     /// <param name="fontSize">A font size for the book; Defaults to 10</param>
     /// <returns>A <paramref name="Book"/> object containing the data corresponding to the new book.</returns>
-    private Book AddBook(BookResponse bookResponse, float fontSize = 10.0f)
+    private Book AddBook(BookResponse bookResponse, float fontSize = 15.0f)
     {
         if (bookCount >= MAX_CAPACITY)
         {

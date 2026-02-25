@@ -2,6 +2,7 @@
 using TMPro;
 using System.Collections.Generic;
 using System;
+using JetBrains.Annotations;
 
 public class BookRenderer : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class BookRenderer : MonoBehaviour
     [SerializeField]
     private List<TextMeshPro> pages;
 
+    //private Camera targetCamera;
+
     // Instantiate the book rendering system(prefab) and then references of cameras and text fields
     // disabled the render system cameras (so that they draw on commands instead of every frame)
     private void Awake()
@@ -39,7 +42,15 @@ public class BookRenderer : MonoBehaviour
         bookRenderSystemPrefab = Resources.Load<GameObject>(renderingSystemPrefabPath);
         Debug.Assert(bookRenderSystemPrefab != null);
 
-        bookRenderSystem = Instantiate(bookRenderSystemPrefab);
+        //float spawnDepth = 5f;
+        //targetCamera = Camera.main;
+        //Vector3 viewportCenter = new Vector3(5f, 5f, spawnDepth);
+        //Debug.Log(viewportCenter);
+        //Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
+
+        //bookRenderSystem = Instantiate(bookRenderSystemPrefab, spawnPosition, Quaternion.identity);
+
+        //bookRenderSystem = Instantiate(bookRenderSystemPrefab);
         cameras = new List<Camera>
         {
             GameObject.Find("CoverCamera").GetComponent<Camera>(),
@@ -58,6 +69,13 @@ public class BookRenderer : MonoBehaviour
             GameObject.Find("PageContent-Left").GetComponent<TextMeshPro>(),
             GameObject.Find("PageContent-Right").GetComponent<TextMeshPro>()
         };
+        //float spawnDepth = 5f;
+        //targetCamera = Camera.main;
+        //Vector3 viewportCenter = new Vector3(0.5f, 0.5f, spawnDepth);
+        //Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
+
+        //bookRenderSystem = Instantiate(bookRenderSystemPrefab, spawnPosition, Quaternion.identity);
+
     }
 
     private void Start()
