@@ -33,7 +33,7 @@ public class BookRenderer : MonoBehaviour
     [SerializeField]
     private List<TextMeshPro> pages;
 
-    //private Camera targetCamera;
+    private Camera targetCamera;
 
     // Instantiate the book rendering system(prefab) and then references of cameras and text fields
     // disabled the render system cameras (so that they draw on commands instead of every frame)
@@ -42,14 +42,14 @@ public class BookRenderer : MonoBehaviour
         bookRenderSystemPrefab = Resources.Load<GameObject>(renderingSystemPrefabPath);
         Debug.Assert(bookRenderSystemPrefab != null);
 
-        //float spawnDepth = 5f;
-        //targetCamera = Camera.main;
-        //Vector3 viewportCenter = new Vector3(5f, 5f, spawnDepth);
-        //Debug.Log(viewportCenter);
-        //Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
-
-        //bookRenderSystem = Instantiate(bookRenderSystemPrefab, spawnPosition, Quaternion.identity);
-
+        float spawnDepth = 3.5f;
+        targetCamera = Camera.main;
+        Vector3 viewportCenter = new Vector3(0.5f, 0.4f, spawnDepth);
+        Debug.Log(viewportCenter);
+        Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
+        spawnPosition.y += 1.0f; // adjust height above ground
+        bookRenderSystem = Instantiate(bookRenderSystemPrefab, spawnPosition, Quaternion.identity);
+        bookRenderSystem.transform.localScale = Vector3.one * 4.5f;
         //bookRenderSystem = Instantiate(bookRenderSystemPrefab);
         cameras = new List<Camera>
         {
@@ -121,6 +121,7 @@ public class BookRenderer : MonoBehaviour
         int i = 0;
         foreach (Camera cam in cameras)
         {
+
             cam.targetTexture = book.renderTextures[i];
             cam.Render();
             i++;

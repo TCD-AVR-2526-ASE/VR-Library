@@ -107,12 +107,14 @@ public class BookSystem : MonoBehaviour
     /// <param name="book"></param>
     public void ProcessBookRequest(Book book)
     {
-        float spawnDepth = 5f;
+        float spawnDepth = 3.5f;
         targetCamera = Camera.main;
-        Vector3 viewportCenter = new Vector3(0.5f, 0.5f, spawnDepth);
+        Vector3 viewportCenter = new Vector3(0.5f, 0.4f, spawnDepth);
         Debug.Log(viewportCenter);
         Vector3 spawnPosition = targetCamera.ViewportToWorldPoint(viewportCenter);
+        spawnPosition.y += 1.0f; // adjust height above ground
         EndlessBook endlessBook = Instantiate(endlessBookPrefab, spawnPosition, Quaternion.identity).GetComponent<EndlessBook>();
+        endlessBook.transform.localScale = Vector3.one * 4.5f;
 
         book.SetBookInstance(endlessBook);
         bookController.SetBook(book);
