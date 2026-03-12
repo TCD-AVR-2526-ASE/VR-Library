@@ -26,4 +26,10 @@ public class RedisTest {
         template.opsForValue().set("cache", "111", 10, TimeUnit.SECONDS);
     }
 
+    @Test
+    void testSaveBookLatestPage() {
+        RedisTemplate template = (RedisTemplate) context.getBean("redisTemplate");
+        template.opsForValue().set("Book:Page:Cache", "2437");
+    }
+
 }
