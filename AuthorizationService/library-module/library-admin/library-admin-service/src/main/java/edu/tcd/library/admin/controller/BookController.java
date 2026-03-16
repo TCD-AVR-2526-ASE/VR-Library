@@ -37,7 +37,7 @@ public class BookController {
         QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(StrUtil.isNotEmpty(keyword), "title", keyword);
         queryWrapper.apply(StrUtil.isNotEmpty(subject), " subjects::text ILIKE '%" + subject + "%'");
-        queryWrapper.apply(StrUtil.isNotEmpty(bookshelve), " bookshelve::text ILIKE '%" + bookshelve + "%'");
+        queryWrapper.apply(StrUtil.isNotEmpty(bookshelve), " bookshelves::text ILIKE '%" + bookshelve + "%'");
         queryWrapper.apply(StrUtil.isNotEmpty(author), "EXISTS (SELECT 1 FROM jsonb_array_elements(authors) AS author WHERE author->>'name' ILIKE '%" + author + "%')");
         queryWrapper.orderByAsc("id");
 
