@@ -42,7 +42,7 @@ public class GutendexBookScheduler {
             .writeTimeout(60, TimeUnit.SECONDS)
             .build();
 
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */30 * * * ?")
     public void cronTask() {
         log.info("Triggering Gutendex Book Scheduler...");
 
