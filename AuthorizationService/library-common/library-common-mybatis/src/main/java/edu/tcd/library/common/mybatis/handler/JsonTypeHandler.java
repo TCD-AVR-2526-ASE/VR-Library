@@ -60,6 +60,9 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
     private T toObject(String content, Class<?> clazz) {
         if (content != null && !content.isEmpty()) {
             try {
+                if (clazz == String.class) {
+                    return (T) content;
+                }
                 return (T) JSONUtil.toBean(content, clazz);
             } catch (Exception e) {
                 throw new RuntimeException(e);

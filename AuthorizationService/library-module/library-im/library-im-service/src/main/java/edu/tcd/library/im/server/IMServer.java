@@ -1,6 +1,7 @@
 package edu.tcd.library.im.server;
 
 import edu.tcd.library.im.config.NettyConfig;
+import edu.tcd.library.im.service.IMService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -30,12 +31,15 @@ public class IMServer {
 
     private final IMAuthHandler tokenHandler;
 
+    private final IMService imService;
+
     private final NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-    public IMServer(NettyConfig config, IMAuthHandler tokenHandler) {
+    public IMServer(NettyConfig config, IMAuthHandler tokenHandler, IMService imService) {
         this.config = config;
         this.tokenHandler = tokenHandler;
+        this.imService = imService;
     }
 
     public void run() {
@@ -65,7 +69,7 @@ public class IMServer {
                                     pipeline.addLast(new WebSocketServerProtocolHandler("/im"));
 
                                     // Add custom WebSocket business logic handler
-                                    pipeline.addLast(new IMChatHandler());
+                                    pipeline.addLast(new IMChatHandler(imService));
                                 }
                             }
                     )

@@ -10,19 +10,7 @@ public enum IMTypeEnum {
 
     HEARTBEAT("heartbeat", "Heartbeat"),
 
-    TASK("task", "Task"),
-
-    APPLY("apply", "Application"),
-
-    DOWNLOAD("download", "Download Request"),
-
-    STORE_PUBLIC("storePublic", "Public Repository Approval"),
-
-    MESSAGE("message", "Message"),
-
-    FILE("file", "File"),
-
-    READ("read", "Message Read Receipt");
+    KICKOFF("kickoff", "Kickoff");
 
     private final String name;
 

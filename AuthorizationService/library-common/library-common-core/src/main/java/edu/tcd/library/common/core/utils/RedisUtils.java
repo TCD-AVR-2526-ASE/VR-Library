@@ -13,6 +13,20 @@ public class RedisUtils {
     private final RedisTemplate<String, Object> redisTemplate = SpringUtil.getBean("redisTemplate");
 
     /**
+     * Set value only if key does not exist (SETNX)
+     */
+    public Boolean setIfAbsent(String key, Object value, long time, TimeUnit unit) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, time, unit);
+    }
+
+    /**
+     * Delete key (Alias for del method to maintain compatibility)
+     */
+    public Boolean delete(String key) {
+        return this.del(key);
+    }
+
+    /**
      * Set value
      */
     public void set(String key, Object value, long time) {

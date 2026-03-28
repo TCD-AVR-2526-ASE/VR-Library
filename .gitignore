@@ -464,6 +464,7 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/unity,visualstudio
 
 
-/AuthorizationService/**/target/
-/**/.idea
-/AuthorizationService/**/**.iml
+# Springboot
+target/
+**/target/
+.idea/
