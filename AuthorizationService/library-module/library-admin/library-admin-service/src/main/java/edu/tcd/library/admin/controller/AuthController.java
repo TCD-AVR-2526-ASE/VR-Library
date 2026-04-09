@@ -1,8 +1,10 @@
 package edu.tcd.library.admin.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
 import edu.tcd.library.admin.dto.UmsAdminLoginDTO;
+import edu.tcd.library.admin.dto.UpdateUserPasswordDTO;
 import edu.tcd.library.admin.entity.UmsAdmin;
 import edu.tcd.library.admin.service.UmsAdminService;
 import edu.tcd.library.admin.vo.CurrentUserVO;
@@ -52,6 +54,12 @@ public class AuthController {
     public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdminDTO umsAdminParam) {
         UmsAdmin umsAdmin = adminService.register(umsAdminParam);
         return CommonResult.judge(umsAdmin != null, umsAdmin, "register failed！");
+    }
+
+    @Operation(summary = "change password")
+    @RequestMapping(value = "/updateMyPassword", method = RequestMethod.POST)
+    public CommonResult<Boolean> updateMyPassword(@RequestBody UpdateUserPasswordDTO param) {
+        return adminService.updateMyPassword(param);
     }
 
 }

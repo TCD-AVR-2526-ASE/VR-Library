@@ -1,6 +1,9 @@
 package edu.tcd.library.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckDisable;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.tcd.library.admin.dto.UmsAdminDTO;
 import edu.tcd.library.admin.dto.UpdatePasswordByAdminDTO;
@@ -63,13 +66,6 @@ public class UmsAdminController {
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public CommonResult<Boolean> updatePassword(@RequestBody UpdatePasswordByAdminDTO param) {
         return adminService.updatePassword(param);
-    }
-
-    @Operation(summary = "change password")
-    @RequestMapping(value = "/updateMyPassword", method = RequestMethod.POST)
-    @SaCheckLogin
-    public CommonResult<Boolean> updateMyPassword(@RequestBody UpdateUserPasswordDTO param) {
-        return adminService.updateMyPassword(param);
     }
 
     @Operation(summary = "get information")
