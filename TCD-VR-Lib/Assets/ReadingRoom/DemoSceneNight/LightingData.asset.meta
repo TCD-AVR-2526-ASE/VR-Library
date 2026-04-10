@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0d66d419e6ecb244fb8459feb95122f4
+timeCreated: 1487716835
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/DemoSceneNight/LightingData.asset
+  uploadId: 718261

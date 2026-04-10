@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fbb21fb066b31884182a25e9afa2c18a
+timeCreated: 1487622712
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/carpet/carpet tile.prefab
+  uploadId: 718261

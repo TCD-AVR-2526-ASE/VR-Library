@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 825f874829dc2554b9045b0fb872d799
+labels:
+- book
+- environment
+- furniture
+- pbr
+- readingroom
+- retro
+- room
+- table
+- vintage
+- vr
+- wood
+timeCreated: 1487712226
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/DemoSceneNight.unity
+  uploadId: 718261

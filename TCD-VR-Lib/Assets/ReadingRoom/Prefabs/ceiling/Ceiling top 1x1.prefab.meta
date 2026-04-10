@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 93cbfbd82c7a4e142b126d0409d423fc
+timeCreated: 1487462107
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/ceiling/Ceiling top 1x1.prefab
+  uploadId: 718261

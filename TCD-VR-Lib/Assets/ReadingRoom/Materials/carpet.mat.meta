@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d233325c37b238d478b5d819b1644b8e
+timeCreated: 1487622380
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/carpet.mat
+  uploadId: 718261

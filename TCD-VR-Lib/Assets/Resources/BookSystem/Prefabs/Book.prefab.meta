@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5ef2bcca2a96f38498a8dcf52868e53e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134213
+  packageName: EndlessBook
+  packageVersion: 1.14.0
+  assetPath: Assets/EndlessBook/Book/Prefabs/Book.prefab
+  uploadId: 808958

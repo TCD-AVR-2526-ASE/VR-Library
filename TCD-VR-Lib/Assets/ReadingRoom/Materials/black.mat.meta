@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5580a582db991c543a800801dc3ef641
+timeCreated: 1487460437
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/black.mat
+  uploadId: 718261

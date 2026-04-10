@@ -1,0 +1,16 @@
+{
+    "name": "Cache",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d5d7bceb264702a499d7d65128bdc7bf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

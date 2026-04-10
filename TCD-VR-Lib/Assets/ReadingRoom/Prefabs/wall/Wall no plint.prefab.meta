@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eeac6ee781e264948ba59eb4f08d5d05
+timeCreated: 1487537441
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/wall/Wall no plint.prefab
+  uploadId: 718261

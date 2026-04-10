@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 376b0d30488b3fd4c8d30e781ab9f8d4
+timeCreated: 1487459876
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/DwnCabGlass.prefab
+  uploadId: 718261

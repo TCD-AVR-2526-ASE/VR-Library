@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a1bebbe8d5300354ca5593d087fb32db
+timeCreated: 1487461748
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/wall/DoorWall long.prefab
+  uploadId: 718261

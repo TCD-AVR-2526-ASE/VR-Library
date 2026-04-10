@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ca78bad365f83d9498d6abb0bdf0dcee
+timeCreated: 1487765110
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/ReadMe.txt
+  uploadId: 718261

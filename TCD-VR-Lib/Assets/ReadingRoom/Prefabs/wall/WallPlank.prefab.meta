@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5e0054bb4d8fc5e4cad8e2ad0e7ad786
+timeCreated: 1487542158
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/wall/WallPlank.prefab
+  uploadId: 718261

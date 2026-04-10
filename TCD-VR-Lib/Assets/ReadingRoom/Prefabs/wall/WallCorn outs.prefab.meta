@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 11bc6bba0079ae844b77d0aa99b2b41b
+timeCreated: 1487454842
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/wall/WallCorn outs.prefab
+  uploadId: 718261

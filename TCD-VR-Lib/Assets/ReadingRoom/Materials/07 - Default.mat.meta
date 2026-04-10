@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e4deca0494d9b7449b77107ecd7772fc
+timeCreated: 1487459563
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/07 - Default.mat
+  uploadId: 718261

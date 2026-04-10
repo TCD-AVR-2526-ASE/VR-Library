@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: da229cc38e402b84897f17c72472abb9
+timeCreated: 1487454609
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/UpCab.prefab
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2187943ae2698a84190f09070a321e2d
+timeCreated: 1487627118
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/gldbookstand.mat
+  uploadId: 718261

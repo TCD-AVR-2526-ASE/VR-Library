@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 056e90600b899a34fb93aced4f3ba9a7
+timeCreated: 1487451367
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/PlasterWhite 00.mat
+  uploadId: 718261

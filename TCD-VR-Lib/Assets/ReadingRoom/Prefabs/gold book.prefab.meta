@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5a61e135b4a563544a60c94fd493e8d6
+timeCreated: 1487627471
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/gold book.prefab
+  uploadId: 718261

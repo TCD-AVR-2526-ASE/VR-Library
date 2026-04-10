@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8da47d4f0563bf54094f2cb2044ad21d
+timeCreated: 1487620503
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/book/book 2.prefab
+  uploadId: 718261

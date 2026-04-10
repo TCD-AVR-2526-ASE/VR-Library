@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2eb717eb93f292949ac32f33b503b158
+timeCreated: 1487533259
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/DwnCabGlass cut.prefab
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3159272824cd77a4c9c3df4d2e477b2d
+timeCreated: 1487451367
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/greenplaster.mat
+  uploadId: 718261

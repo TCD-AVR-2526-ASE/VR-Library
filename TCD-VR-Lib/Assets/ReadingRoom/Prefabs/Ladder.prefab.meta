@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 948194f38182f184580f8c1e2779dc6b
+timeCreated: 1487454272
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/Ladder.prefab
+  uploadId: 718261

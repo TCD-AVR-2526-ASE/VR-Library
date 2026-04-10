@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 958cffe24bccea64aa57d7abd5948762
+timeCreated: 1487454596
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/UpKolon.prefab
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3e66e29dccd11d04c841b6467bc5734c
+timeCreated: 1487451367
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/parquet 2.mat
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c3b3801d189a4644984902ff76bef262
+timeCreated: 1487453873
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/door OP.mat
+  uploadId: 718261

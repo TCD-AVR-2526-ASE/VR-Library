@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 22d13198e4f597d45a8a3248a718e15f
+timeCreated: 1487451367
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/cabinet glass.mat
+  uploadId: 718261

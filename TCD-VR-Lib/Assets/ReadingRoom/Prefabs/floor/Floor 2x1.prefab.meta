@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ecd316e5c2de841408716d9aa9aedf0f
+timeCreated: 1487454724
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/floor/Floor 2x1.prefab
+  uploadId: 718261

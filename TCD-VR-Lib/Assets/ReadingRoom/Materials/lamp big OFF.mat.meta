@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2506f077139dce14380586fdf3e9ea89
+timeCreated: 1487546092
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/lamp big OFF.mat
+  uploadId: 718261

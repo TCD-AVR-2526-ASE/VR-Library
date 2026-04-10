@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 63ff8cef9d0f23b48b424c8315771778
+timeCreated: 1487634013
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/lamphldr.prefab
+  uploadId: 718261

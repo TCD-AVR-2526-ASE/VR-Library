@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 434c157d3e1825c4e86e1be6b2c659ee
+timeCreated: 1487671073
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/hldr.mat
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6a34da5da6bd16a488203e34fecdac58
+timeCreated: 1487538681
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/SunLight.mat
+  uploadId: 718261

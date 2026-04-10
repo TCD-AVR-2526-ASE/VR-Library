@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2f72546256eb79446828eae092121e12
+timeCreated: 1487461937
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/ceiling/Ceiling corn out.prefab
+  uploadId: 718261

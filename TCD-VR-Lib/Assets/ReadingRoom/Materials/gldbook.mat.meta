@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 48edf6b6406338d4db908f1080dbb5ac
+timeCreated: 1487627185
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/gldbook.mat
+  uploadId: 718261

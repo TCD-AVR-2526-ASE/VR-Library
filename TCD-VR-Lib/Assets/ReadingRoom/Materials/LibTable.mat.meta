@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d8169e6e4135a884fba656da3d8792a7
+timeCreated: 1487606683
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/LibTable.mat
+  uploadId: 718261

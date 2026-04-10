@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 953bb3d085a7176449e10dc22036a595
+timeCreated: 1487459748
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/UpCabGlass.prefab
+  uploadId: 718261

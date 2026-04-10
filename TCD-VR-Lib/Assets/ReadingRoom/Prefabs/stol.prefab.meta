@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0ce3390a68147644f9eb7b547d6a1110
+timeCreated: 1487606900
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/stol.prefab
+  uploadId: 718261

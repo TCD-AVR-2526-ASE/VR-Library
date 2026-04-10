@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f0e5f2003a5c08745a3bc829596d5e47
+timeCreated: 1487606733
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/LibStLamp ON.mat
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f0e3a39fc27401f46af069564ea75ae7
+timeCreated: 1487546136
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/LampBig.prefab
+  uploadId: 718261

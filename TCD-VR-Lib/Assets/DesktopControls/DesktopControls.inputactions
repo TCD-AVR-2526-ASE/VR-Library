@@ -1,0 +1,102 @@
+{
+    "version": 1,
+    "name": "DesktopControls",
+    "maps": [
+        {
+            "name": "Gaze",
+            "id": "ae8df52f-a71b-4630-8601-08e73a845e24",
+            "actions": [
+                {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "6da1ccb0-488c-4096-9ac7-a3dcb87ca9ae",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "dffdb5c6-f21c-4007-b98c-d2d306b78e61",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Movement",
+            "id": "cce11ab7-dbb6-4917-bce6-12181750e03e",
+            "actions": [
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "09f87fbc-32f7-43c8-8f5c-bca20c950d89",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e7c2289d-3712-44ed-b126-1c1e9306ecec",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI_Interaction",
+            "id": "012e77a1-c28c-4467-8515-dc4dc438b4aa",
+            "actions": [
+                {
+                    "name": "ToggleSettings",
+                    "type": "Button",
+                    "id": "f0009ad4-ae23-48af-ba23-c3ffc63ebe25",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fdc3884c-8208-45a0-bd42-6ce00b4081bb",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleSettings",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "398d28ed-812a-4daa-842a-8cb94d98d8f0",
+                    "path": "<XRController>{LeftHand}/{Menu}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleSettings",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

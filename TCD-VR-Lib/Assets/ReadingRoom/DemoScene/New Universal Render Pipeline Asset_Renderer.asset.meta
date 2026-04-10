@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 930301d18808d9f46a1d1bbefe65cc43
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/DemoScene/New Universal Render Pipeline Asset_Renderer.asset
+  uploadId: 718261

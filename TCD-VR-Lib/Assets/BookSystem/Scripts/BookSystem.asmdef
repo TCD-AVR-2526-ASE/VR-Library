@@ -1,0 +1,25 @@
+{
+    "name": "BookSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1557bd468d3b0864e847e26d7d3fab75",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:1e1f826984429fe4984c920feb90cece",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:e40ba710768534012815d3193fa296cb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "echo17"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

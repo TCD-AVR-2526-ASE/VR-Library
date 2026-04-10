@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 32f7d723163000640af6ad16d1bb7eaa
+timeCreated: 1487453667
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/ceiling.mat
+  uploadId: 718261

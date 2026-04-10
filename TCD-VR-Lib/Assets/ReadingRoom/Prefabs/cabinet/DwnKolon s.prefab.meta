@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2aee8bac6afa31a4daaca8ebe512ffc3
+timeCreated: 1487454259
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/DwnKolon s.prefab
+  uploadId: 718261

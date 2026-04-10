@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: aa875bc8076763547a48bebbdb4008d5
+timeCreated: 1487671073
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/carpet tile.mat
+  uploadId: 718261

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6bb0d868efb7834458270e4fbe9c7373
+timeCreated: 1487152417
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Materials/wallwood.mat
+  uploadId: 718261

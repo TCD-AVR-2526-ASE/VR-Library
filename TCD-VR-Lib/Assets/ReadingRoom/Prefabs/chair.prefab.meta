@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 32162568be1821d44b0502ab360e0caf
+timeCreated: 1487627462
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/chair.prefab
+  uploadId: 718261

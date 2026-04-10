@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 142f8248d1f643c46a5f978a823896c8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/DemoScene/volume Profile.asset
+  uploadId: 718261

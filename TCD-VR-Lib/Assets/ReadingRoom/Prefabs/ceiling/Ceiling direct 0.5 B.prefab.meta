@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9e08d17ae6e87ab47a5c5fe00f92d14f
+timeCreated: 1487461871
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/ceiling/Ceiling direct 0.5 B.prefab
+  uploadId: 718261

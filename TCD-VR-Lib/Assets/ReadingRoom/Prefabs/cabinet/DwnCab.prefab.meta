@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5c1a7396bd9f5874cac9e07b6b0849bc
+timeCreated: 1487454237
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301435
+  packageName: Library Reading Room (URP)
+  packageVersion: 1.0
+  assetPath: Assets/ReadingRoom/Prefabs/cabinet/DwnCab.prefab
+  uploadId: 718261
