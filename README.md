@@ -19,20 +19,9 @@ As a general rule of thumb, all files in the `Assets/` folder were conceived and
 # Compile & Deploy instructions
 
 ## Releases
-The easiest way to distribute the project to other people is through GitHub Releases rather than committing build binaries into the repository itself.
+The latest downloadable builds are available from the repository's GitHub Releases page.
 
-A typical release should contain:
-- a desktop build archive such as `Windows.zip`
-- a headset build such as a Quest-compatible `.apk`
-
-Recommended release flow:
-1. Push the latest source code changes to GitHub.
-2. Open the repository's `Releases` page.
-3. Draft a new release from the relevant tag or create a new tag for that build.
-4. Upload the desktop and VR build artifacts to the release.
-5. Add short release notes explaining what the build contains and how to install it.
-
-This keeps the repository focused on source code while still making builds easy to download.
+Use the published release if you want a ready-made desktop or headset build instead of compiling the project yourself.
 
 ## Running it in Unity
 The easiest way to use the project locally is to open it in Unity and hit Play.
