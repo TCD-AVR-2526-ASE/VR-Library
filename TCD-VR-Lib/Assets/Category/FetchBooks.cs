@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
@@ -64,6 +64,37 @@ public class FetchBooks : MonoBehaviour
         }
     }
 
+    private void LoadLocalBooks()
+    {
+        Debug.Log("[FetchBooks] Loading local books...");
+
+        TextAsset jsonFile = Resources.Load<TextAsset>("BookFiles/books");
+
+        if (jsonFile == null)
+        {
+            Debug.LogError("Local books.json not found in Resources!");
+            return;
+        }
+
+        LocalBookList localData = JsonUtility.FromJson<LocalBookList>(jsonFile.text);
+
+        if (localData == null || localData.books == null || localData.books.Length == 0)
+        {
+            Debug.LogWarning("No local books found.");
+            return;
+        }
+
+        int count = Mathf.Min(localData.books.Length, maxResults);
+
+        for (int i = 0; i < count; i++)
+        {
+            var book = localData.books[i];
+            AddBookRow(book.id, book.title, book.author);
+        }
+
+        Debug.Log($"[FetchBooks] Loaded {count} local books.");
+    }
+
     private IEnumerator SearchGutenberg()
     {
         if (isSearching) yield break;
@@ -111,7 +142,14 @@ public class FetchBooks : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"[FetchBooks] Search failed: {request.error}");
+                Debug.LogError($"[FetchBooks] API failed: {request.error}");
+
+                // Clear UI
+                foreach (Transform child in content)
+                    Destroy(child.gameObject);
+
+                LoadLocalBooks();
+
                 isSearching = false;
                 yield break;
             }
@@ -125,7 +163,10 @@ public class FetchBooks : MonoBehaviour
 
             if (response == null || response.results == null || response.results.Length == 0)
             {
-                Debug.Log("[FetchBooks] No books found.");
+                Debug.Log("[FetchBooks] No API books. Falling back to local.");
+
+                LoadLocalBooks();
+
                 isSearching = false;
                 yield break;
             }
@@ -138,26 +179,33 @@ public class FetchBooks : MonoBehaviour
                     ? book.authors[0].name
                     : "Unknown";
 
-                if (bookRowPrefab != null)
-                {
-                    GameObject row = Instantiate(bookRowPrefab, content);
-                    BookRowUI ui = row.GetComponent<BookRowUI>();
-                    if (ui != null)
-                        ui.Setup(book.id, book.title, authorName, this);
-                    else
-                        Debug.LogWarning($"[FetchBooks] Prefab missing BookRowUI component!");
-                }
-                else
-                {
-                    GameObject row = CreateBookRow(book.id, book.title, authorName);
-                    row.transform.SetParent(content, false);
-                }
+                AddBookRow(book.id, book.title, authorName);
             }
 
             Debug.Log($"[FetchBooks] Found {count} books.");
         }
 
         isSearching = false;
+    }
+
+    private void AddBookRow(int id, string title, string authorName)
+    {
+        if (bookRowPrefab != null)
+        {
+            GameObject row = Instantiate(bookRowPrefab, content);
+            BookRowUI ui = row.GetComponent<BookRowUI>();
+            if (ui != null && ui.requestButton != null)
+            {
+                ui.Setup(id, title, authorName, this);
+                return;
+            }
+
+            Debug.LogWarning("[FetchBooks] Book row prefab is missing a usable request button. Falling back to runtime row.");
+            Destroy(row);
+        }
+
+        GameObject fallbackRow = CreateBookRow(id, title, authorName);
+        fallbackRow.transform.SetParent(content, false);
     }
 
     /// <summary>
@@ -274,5 +322,20 @@ public class FetchBooks : MonoBehaviour
         public string name;
         public int birth_year;
         public int death_year;
+    }
+
+    // --- Local Book JSON ---
+    [System.Serializable]
+    public class LocalBook
+    {
+        public int id;
+        public string title;
+        public string author;
+    }
+
+    [System.Serializable]
+    public class LocalBookList
+    {
+        public LocalBook[] books;
     }
 }

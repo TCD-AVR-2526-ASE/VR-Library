@@ -3,6 +3,9 @@ using UnityEngine.XR.Management;
 using Unity.XR.CoreUtils;
 using XRMultiplayer;
 
+/// <summary>
+/// Enables desktop board interaction while the local player is inside the board's trigger zone.
+/// </summary>
 public class BoardInteractionZone : MonoBehaviour
 {
     [SerializeField] private BoardInteraction board;

@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Binds the time slider UI to <see cref="WorldTime"/> and keeps the displayed clock text in sync.
+/// </summary>
 public class time_section_ui : MonoBehaviour
 {
     [Header("UI References")]
@@ -33,6 +36,9 @@ public class time_section_ui : MonoBehaviour
         SyncFromWorldTime();
     }
 
+    /// <summary>
+    /// Clears the short manual-override window once the user releases the slider.
+    /// </summary>
     public void OnPointerUp()
     {
         manualOverrideUntil = 0f;

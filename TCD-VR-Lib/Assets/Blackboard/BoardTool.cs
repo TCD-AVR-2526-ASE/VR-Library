@@ -2,6 +2,9 @@
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
+/// <summary>
+/// Drives a grabbed chalk or eraser tool by raycasting from its tip into the shared blackboard.
+/// </summary>
 public class BoardTool : MonoBehaviour
 {
     [SerializeField] private Transform tip;
@@ -17,6 +20,10 @@ public class BoardTool : MonoBehaviour
         grab = GetComponent<XRGrabInteractable>();
     }
 
+    /// <summary>
+    /// Assigns the target board this tool should draw onto.
+    /// </summary>
+    /// <param name="targetBoard">The board controlled by this chalk or eraser.</param>
     public void SetBoard(BoardInteraction targetBoard)
     {
         board = targetBoard;
@@ -40,7 +47,6 @@ public class BoardTool : MonoBehaviour
         board.DrawFromRay(backRay, isEraser, lastUV);
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactionToleranceDist) && hit.collider.gameObject == board.gameObject) {
-            Debug.Log("Hit blackboard!");
             lastUV = hit.textureCoord; 
 
             var tipToChalk = transform.position - tip.position;

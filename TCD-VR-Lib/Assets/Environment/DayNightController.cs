@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 
+/// <summary>
+/// Synchronizes world time and lighting across the network, including the sun, ambient light, fog, and library lights.
+/// </summary>
 public class DayNightController : NetworkBehaviour
 {
     [System.Serializable]
@@ -122,6 +125,10 @@ public class DayNightController : NetworkBehaviour
         UpdateLibraryLights();
     }
 
+    /// <summary>
+    /// Updates the shared global light intensity multiplier.
+    /// </summary>
+    /// <param name="value">The brightness multiplier applied to environment lighting.</param>
     public void SetLightIntensity(float value)
     {
         intensity = value;

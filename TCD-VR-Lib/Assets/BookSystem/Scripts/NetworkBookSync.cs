@@ -1,10 +1,10 @@
 using echo17.EndlessBook;
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
-/// Local-side helper for a spawned network book.
-/// Resolves the shared book identity into local book data, binds it,
-/// observes local changes, and applies replicated state.
+/// Resolves replicated book identity into local book data and keeps the local instance synchronized.
+/// Applies replicated state, observes local changes, and plays remote-only page-turn animations.
 /// </summary>
 public class NetworkBookSync : MonoBehaviour
 {
@@ -15,11 +15,16 @@ public class NetworkBookSync : MonoBehaviour
     private bool isLoadingBook;
     private bool suppressLocalSync;
     private bool waitingForIdentity;
+    private bool suppressImmediateApply;
     private int lastObservedPage = -1;
     private bool lastObservedOpen;
 
     public Book LocalBook => localBook;
 
+    /// <summary>
+    /// Initializes this sync helper with its owning <see cref="NetworkBookState"/>.
+    /// </summary>
+    /// <param name="ownerState">The state component that owns the replicated values.</param>
     public void Initialize(NetworkBookState ownerState)
     {
         state = ownerState;
@@ -54,6 +59,9 @@ public class NetworkBookSync : MonoBehaviour
         state.PushReplicatedState(currentPage, currentOpen);
     }
 
+    /// <summary>
+    /// Tries to resolve the replicated identity into a locally loaded <see cref="Book"/> and bind it to this object.
+    /// </summary>
     public void TryLoadAndBindBook()
     {
         if (localBook != null || isLoadingBook || bookSystem == null || bookRepository == null)
@@ -115,8 +123,14 @@ public class NetworkBookSync : MonoBehaviour
         ApplyNetworkStateImmediately();
     }
 
+    /// <summary>
+    /// Applies the currently replicated page and open state onto the local <see cref="echo17.EndlessBook.EndlessBook"/> instance.
+    /// </summary>
     public void ApplyNetworkStateImmediately()
     {
+        if (suppressImmediateApply)
+            return;
+
         if (localBook == null || localBook.BookInstance == null)
         {
             Debug.LogWarning($"[NetworkBookSync] Cannot apply network state on {name}; localBook={localBook != null} instance={(localBook != null && localBook.BookInstance != null)}");
@@ -146,6 +160,42 @@ public class NetworkBookSync : MonoBehaviour
         suppressLocalSync = false;
     }
 
+    /// <summary>
+    /// Plays a remote page-turn animation locally without echoing that animation back into replicated state.
+    /// </summary>
+    /// <param name="forward"><c>true</c> for a forward turn; <c>false</c> for a backward turn.</param>
+    /// <param name="turnSpeed">The animation duration to use.</param>
+    public void PlayRemotePageTurn(bool forward, float turnSpeed)
+    {
+        if (localBook == null || localBook.BookInstance == null)
+            return;
+
+        StartCoroutine(PlayRemotePageTurnRoutine(forward, turnSpeed));
+    }
+
+    private IEnumerator PlayRemotePageTurnRoutine(bool forward, float turnSpeed)
+    {
+        if (localBook == null || localBook.BookInstance == null)
+            yield break;
+
+        suppressLocalSync = true;
+        suppressImmediateApply = true;
+
+        if (forward)
+            localBook.BookInstance.TurnForward(turnSpeed);
+        else
+            localBook.BookInstance.TurnBackward(turnSpeed);
+
+        yield return new WaitForSeconds(Mathf.Max(0.05f, turnSpeed));
+
+        suppressImmediateApply = false;
+        ApplyNetworkStateImmediately();
+    }
+
+    /// <summary>
+    /// Returns the best available title for annotation lookups on this client.
+    /// </summary>
+    /// <returns>The bound local book title, or the replicated shared title if binding has not completed yet.</returns>
     public string GetBookTitleForAnnotations()
     {
         if (localBook != null && !string.IsNullOrWhiteSpace(localBook.title))
@@ -154,6 +204,9 @@ public class NetworkBookSync : MonoBehaviour
         return state != null ? state.SharedTitle : string.Empty;
     }
 
+    /// <summary>
+    /// Requests a rerender of the currently bound book so visuals reflect state or annotation changes.
+    /// </summary>
     public void RequestRenderRefresh()
     {
         if (bookSystem != null && localBook != null)

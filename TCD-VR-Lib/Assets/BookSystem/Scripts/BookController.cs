@@ -92,12 +92,14 @@ public class BookController : MonoBehaviour
         {
             book.TurnPage(true);
             endlessBook.TurnForward(pageTurnSpeed);
+            endlessBook.GetComponent<NetworkBookState>()?.BroadcastPageTurn(true, pageTurnSpeed);
             if (bookSystem != null) bookSystem.AddRenderRequest(book);
         }
         else if (interactor.TurnPageBackward && !endlessBook.IsFirstPageGroup)
         {
             book.TurnPage(false);
             endlessBook.TurnBackward(pageTurnSpeed);
+            endlessBook.GetComponent<NetworkBookState>()?.BroadcastPageTurn(false, pageTurnSpeed);
             if (bookSystem != null) bookSystem.AddRenderRequest(book);
         }
     }

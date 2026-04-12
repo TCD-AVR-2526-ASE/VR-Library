@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.Management;
+using TMPro;
 
-// A compact network-safe record for one blackboard stroke segment.
+/// <summary>
+/// Represents one serialized blackboard stroke segment for network replication and history replay.
+/// </summary>
 public struct StrokeData : INetworkSerializable
 {
     public Vector2 StartUV;
@@ -18,9 +22,12 @@ public struct StrokeData : INetworkSerializable
     }
 }
 
+/// <summary>
+/// Owns the shared blackboard surface, desktop drawing flow, board tool spawning, and replicated stroke history.
+/// New clients rebuild the current board state by replaying the server's cached strokes.
+/// </summary>
 public class BoardInteraction : NetworkBehaviour
 {
-    // Server-only history used to replay the board for late joiners.
     private readonly List<StrokeData> strokeHistory = new();
 
     [Header("Drawing Settings")]
@@ -31,6 +38,13 @@ public class BoardInteraction : NetworkBehaviour
     [SerializeField] private Color eraseColor = Color.black;
     [SerializeField] private int brushSize = 5;
     [SerializeField] private int eraserSize = 20;
+
+    [Header("Drawing UI")]
+    [SerializeField] private Slider brushSlider;
+    [SerializeField] private TMP_Text brushValueText;
+    [SerializeField] private Slider eraserSlider;
+    [SerializeField] private TMP_Text eraserValueText;
+    [SerializeField] private Image colorButtonImage;
 
     [Header("Tool Spawning")]
     [SerializeField] private GameObject chalkPrefab;
@@ -58,6 +72,9 @@ public class BoardInteraction : NetworkBehaviour
     private bool toolsSpawned;
     private bool loggedDesktopBlocked;
 
+    private Color currentDrawColor = Color.white;
+    private readonly Color[] colorPresets = { Color.white, Color.red, Color.blue, Color.green, Color.yellow };
+
     void Start()
     {
         blackboardRenderer = GetComponent<Renderer>();
@@ -67,8 +84,51 @@ public class BoardInteraction : NetworkBehaviour
 
         CreateBlackboardTexture();
         SpawnBoardTools();
+        SetupUI();
 
         Debug.Log($"[BoardInteraction] Start on '{name}'. Desktop={IsDesktop()}, Camera={(mainCamera != null ? mainCamera.name : "null")}, Renderer={(blackboardRenderer != null ? blackboardRenderer.name : "null")}", this);
+    }
+
+    void SetupUI()
+    {
+        if (brushSlider != null)
+        {
+            brushSlider.value = brushSize;
+            brushSlider.onValueChanged.AddListener(val => {
+                SetBrushSize((int)val);
+                if (brushValueText != null)
+                    brushValueText.text = ((int)val).ToString();
+            });
+        }
+
+        if (eraserSlider != null)
+        {
+            eraserSlider.value = eraserSize;
+            eraserSlider.onValueChanged.AddListener(val => {
+                SetEraserSize((int)val);
+                if (eraserValueText != null)
+                    eraserValueText.text = ((int)val).ToString();
+            });
+        }
+
+        if (colorButtonImage != null)
+            colorButtonImage.color = currentDrawColor;
+    }
+
+    // Hook this to ColorButton's OnClick in the Inspector
+    /// <summary>
+    /// Cycles through the preset desktop chalk colors and updates the UI preview.
+    /// </summary>
+    public void OnColorButtonClicked()
+    {
+        int currentIndex = System.Array.IndexOf(colorPresets, currentDrawColor);
+        int next = (currentIndex + 1) % colorPresets.Length;
+        currentDrawColor = colorPresets[next];
+
+        SetDrawColor(currentDrawColor);
+
+        if (colorButtonImage != null)
+            colorButtonImage.color = currentDrawColor;
     }
 
     public override void OnNetworkSpawn()
@@ -101,8 +161,26 @@ public class BoardInteraction : NetworkBehaviour
 
         FillBlack();
 
-        blackboardMaterial = new Material(Shader.Find("Unlit/Texture"));
-        blackboardMaterial.mainTexture = blackboardTexture;
+        Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (shader == null)
+            shader = Shader.Find("Unlit/Texture");
+        if (shader == null)
+            shader = Shader.Find("Sprites/Default");
+
+        blackboardMaterial = shader != null ? new Material(shader) : new Material(Shader.Find("Standard"));
+
+        if (blackboardMaterial.HasProperty("_BaseMap"))
+            blackboardMaterial.SetTexture("_BaseMap", blackboardTexture);
+        else if (blackboardMaterial.HasProperty("_MainTex"))
+            blackboardMaterial.SetTexture("_MainTex", blackboardTexture);
+        else
+            blackboardMaterial.mainTexture = blackboardTexture;
+
+        if (blackboardMaterial.HasProperty("_BaseColor"))
+            blackboardMaterial.SetColor("_BaseColor", Color.white);
+        else if (blackboardMaterial.HasProperty("_Color"))
+            blackboardMaterial.SetColor("_Color", Color.white);
+
         blackboardRenderer.material = blackboardMaterial;
     }
 
@@ -156,6 +234,12 @@ public class BoardInteraction : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Draws onto the board from a tool ray and forwards the stroke to the server for replication.
+    /// </summary>
+    /// <param name="ray">The tool ray cast from chalk or eraser tip.</param>
+    /// <param name="isErasing">Whether the stroke should erase instead of draw.</param>
+    /// <param name="previousUV">The previous sampled UV used to connect continuous strokes.</param>
     public void DrawFromRay(Ray ray, bool isErasing, Vector2? previousUV)
     {
         if (!Physics.Raycast(ray, out RaycastHit hit, interactionToleranceDist)) return;
@@ -263,54 +347,44 @@ public class BoardInteraction : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Switches the board into eraser mode for desktop drawing.
+    /// </summary>
     public void EnableEraser()
     {
-        if (!CanUseBoardControls())
-        {
-            Debug.Log("[BoardInteraction] EnableEraser blocked because desktop interaction is disabled.", this);
-            return;
-        }
-
+        if (!CanUseBoardControls()) return;
         isEraserMode = true;
         Debug.Log("Eraser mode enabled");
     }
 
+    /// <summary>
+    /// Switches the board into drawing mode for desktop drawing.
+    /// </summary>
     public void EnableDrawing()
     {
-        if (!CanUseBoardControls())
-        {
-            Debug.Log("[BoardInteraction] EnableDrawing blocked because desktop interaction is disabled.", this);
-            return;
-        }
-
+        if (!CanUseBoardControls()) return;
         isEraserMode = false;
         Debug.Log("Drawing mode enabled");
     }
 
+    /// <summary>
+    /// Clears the board for all clients and resets the shared stroke history.
+    /// </summary>
     public void ClearBoard()
     {
-        if (!CanUseBoardControls())
-            return;
-
+        if (!CanUseBoardControls()) return;
         ClearBoardRpc();
         Debug.Log($"[BoardInteraction] ClearBoard called. IsServer={IsServer}");
     }
 
-    public void SetDrawColor(Color color)
-    {
-        drawColor = color;
-    }
+    public void SetDrawColor(Color color) => drawColor = color;
+    public void SetBrushSize(int size) => brushSize = Mathf.Clamp(size, 1, 50);
+    public void SetEraserSize(int size) => eraserSize = Mathf.Clamp(size, 1, 100);
 
-    public void SetBrushSize(int size)
-    {
-        brushSize = Mathf.Clamp(size, 1, 50);
-    }
-
-    public void SetEraserSize(int size)
-    {
-        eraserSize = Mathf.Clamp(size, 1, 100);
-    }
-
+    /// <summary>
+    /// Sets whether desktop mouse drawing is currently allowed for the local player.
+    /// </summary>
+    /// <param name="enabled">Whether desktop drawing input should be accepted.</param>
     public void SetDesktopInteractionEnabled(bool enabled)
     {
         desktopInteractionEnabled = enabled;
@@ -325,9 +399,7 @@ public class BoardInteraction : NetworkBehaviour
 
     bool CanUseBoardControls()
     {
-        if (!IsDesktop())
-            return true;
-
+        if (!IsDesktop()) return true;
         return desktopInteractionEnabled;
     }
 
@@ -340,16 +412,13 @@ public class BoardInteraction : NetworkBehaviour
 
     void OnDestroy()
     {
-        if (blackboardTexture != null)
-            Destroy(blackboardTexture);
-        if (blackboardMaterial != null)
-            Destroy(blackboardMaterial);
+        if (blackboardTexture != null) Destroy(blackboardTexture);
+        if (blackboardMaterial != null) Destroy(blackboardMaterial);
     }
 
     void SpawnBoardTools()
     {
-        if (toolsSpawned)
-            return;
+        if (toolsSpawned) return;
 
         if (chalkPrefab == null || eraserPrefab == null)
         {
@@ -375,8 +444,7 @@ public class BoardInteraction : NetworkBehaviour
 
     void SpawnToolAt(Transform spawnPoint, GameObject toolPrefab)
     {
-        if (spawnPoint == null || toolPrefab == null)
-            return;
+        if (spawnPoint == null || toolPrefab == null) return;
 
         GameObject toolInstance = Instantiate(toolPrefab, spawnPoint.position, spawnPoint.rotation);
         toolInstance.name = toolPrefab.name;
@@ -388,16 +456,10 @@ public class BoardInteraction : NetworkBehaviour
         }
     }
 
-    // Clients submit strokes to the authoritative server copy.
     [Rpc(SendTo.Server)]
     void SubmitStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing)
     {
-        strokeHistory.Add(new StrokeData
-        {
-            StartUV = startUV,
-            EndUV = endUV,
-            Erasing = erasing
-        });
+        strokeHistory.Add(new StrokeData { StartUV = startUV, EndUV = endUV, Erasing = erasing });
 
         if (strokeHistory.Count > maxStrokeHistory)
             strokeHistory.RemoveRange(0, Mathf.Min(10, strokeHistory.Count));
@@ -406,14 +468,12 @@ public class BoardInteraction : NetworkBehaviour
         BroadcastStrokeRpc(startUV, endUV, erasing);
     }
 
-    // Everyone else replays the same stroke without touching history.
     [Rpc(SendTo.NotMe)]
     void BroadcastStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing)
     {
         ApplyStrokeLocally(startUV, endUV, erasing);
     }
 
-    // Late joiners ask the server copy for the current board state.
     [Rpc(SendTo.Server)]
     void RequestBoardHistoryRpc(RpcParams rpcParams = default)
     {
@@ -436,7 +496,6 @@ public class BoardInteraction : NetworkBehaviour
             ReceiveBoardHistoryBatchRpc(new StrokeData[0], true, RpcTarget.Single(requestingClient, RpcTargetUse.Temp));
     }
 
-    // Only the requesting client replays the server history.
     [Rpc(SendTo.SpecifiedInParams)]
     void ReceiveBoardHistoryBatchRpc(StrokeData[] batch, bool isLastBatch, RpcParams rpcParams = default)
     {
@@ -450,7 +509,6 @@ public class BoardInteraction : NetworkBehaviour
         }
     }
 
-    // Clearing resets both the visible board and the authoritative history.
     [Rpc(SendTo.Server)]
     void ClearBoardRpc()
     {

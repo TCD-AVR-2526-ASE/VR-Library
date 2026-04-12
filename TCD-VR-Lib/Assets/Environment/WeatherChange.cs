@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 
+/// <summary>
+/// Coordinates shared weather, season ambience, and wind-driven particle behavior across the network.
+/// The owner chooses the active season and weather state while other clients mirror the replicated values.
+/// </summary>
 public class WeatherChange : NetworkBehaviour
 {
     [Header("Particle System")]
@@ -120,6 +124,9 @@ public class WeatherChange : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets the automatic weather timer after the time of day is adjusted manually.
+    /// </summary>
     public void OnTimeManuallySet()
     {
         lastWeatherCheck = WorldTime.Instance.GetTime();
@@ -154,6 +161,10 @@ public class WeatherChange : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Changes the active season and synchronizes it to other clients when called by the owner.
+    /// </summary>
+    /// <param name="s">The integer value of the target <see cref="Season"/>.</param>
     public void SetSeason(int s)
     {
         currentSeason = (Season)s;
@@ -360,7 +371,9 @@ public class WeatherChange : NetworkBehaviour
             audio.volume = Mathf.Max(0.4f, windSlider.value);
     }
 
-    // rain Parameters
+    /// <summary>
+    /// Configures the particle system for rain behavior.
+    /// </summary>
     public void RainMode()
     {
         // Basic particle lifetime and capacity
@@ -431,7 +444,9 @@ public class WeatherChange : NetworkBehaviour
         psRenderer.maxParticleSize = 0.5f;
     }
 
-    // snow Parameters
+    /// <summary>
+    /// Configures the particle system for snow behavior.
+    /// </summary>
     public void SnowMode()
     {
         // Basic particle lifetime and capacity

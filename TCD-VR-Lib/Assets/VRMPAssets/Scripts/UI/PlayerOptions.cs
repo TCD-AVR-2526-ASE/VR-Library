@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 using UnityEngine.Android;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Gravity;
+using UnityEngine.Events;
 
 namespace XRMultiplayer
 {
@@ -62,7 +63,7 @@ namespace XRMultiplayer
         PermissionCallbacks permCallbacks;
 
         RoomData room;
-
+        public UnityEvent OnMenuClose;
         private void Awake()
         {
             m_VoiceChatManager = FindFirstObjectByType<VoiceChatManager>();
@@ -91,6 +92,8 @@ namespace XRMultiplayer
             permCallbacks = new PermissionCallbacks();
             permCallbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
             permCallbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
+
+            OnMenuClose = new();
         }
 
         private void UpdateHostVisuals(ulong newHostId)
@@ -213,6 +216,9 @@ namespace XRMultiplayer
         public void ToggleMenu()
         {
             gameObject.SetActive(!gameObject.activeSelf);
+
+            if(!gameObject.activeSelf)
+                OnMenuClose.Invoke();
         }
 
         public void LogOut()
