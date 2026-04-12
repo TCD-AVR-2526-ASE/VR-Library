@@ -1,5 +1,23 @@
 # VR-Library
 
+# Notice on code ownership
+
+Not all files in this project were directly written or edited by the team, since there are a lot of dependencies on Unity's base API as well as packages proposed to extend it.
+
+As a general rule of thumb, all files in the `Assets/` folder were conceived and written in full by the team, with the **exception** of files under the following folders:
+- `Assets/Editor`
+- `Assets/Samples`
+- `Assets/Settings`
+- `Assets/TemplatePresets`
+- `Assets/TextMeshPro`
+- `Assets/VRMPAssets`*
+- `Assets/XR`*
+- `Assets/XRI`*
+- `Packages`
+* these packages include general VR controls and flows, which we have in part edited to suit our needs.
+
+# Compile & Deploy instructions
+
 ## Running it in Unity
 The easiest way to use the project is just to open it in Unity and hit Play.
 
