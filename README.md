@@ -18,8 +18,24 @@ As a general rule of thumb, all files in the `Assets/` folder were conceived and
 
 # Compile & Deploy instructions
 
+## Releases
+The easiest way to distribute the project to other people is through GitHub Releases rather than committing build binaries into the repository itself.
+
+A typical release should contain:
+- a desktop build archive such as `Windows.zip`
+- a headset build such as a Quest-compatible `.apk`
+
+Recommended release flow:
+1. Push the latest source code changes to GitHub.
+2. Open the repository's `Releases` page.
+3. Draft a new release from the relevant tag or create a new tag for that build.
+4. Upload the desktop and VR build artifacts to the release.
+5. Add short release notes explaining what the build contains and how to install it.
+
+This keeps the repository focused on source code while still making builds easy to download.
+
 ## Running it in Unity
-The easiest way to use the project is just to open it in Unity and hit Play.
+The easiest way to use the project locally is to open it in Unity and hit Play.
 
 If you do that on a normal setup, it will run in desktop mode automatically. If you have a VR headset connected and ready, the project should switch over to VR mode on its own.
 
@@ -48,11 +64,12 @@ If you want to run the project on a VR headset:
 4. Click `Switch Platform` if Unity has not already switched to Android.
 5. Make sure the correct scene(s) are included.
 6. Build the project as an `.apk`.
-7. After the `.apk` is created, upload it to your headset using something like `SideQuest` or adjacent.
+7. After the `.apk` is created, upload it to your headset using something like `SideQuest`.
 8. Install it on the headset and launch it from there.
 
 ## Quick Summary
-- Press Play in Unity for the fastest way to test.
+- Use GitHub Releases to share builds.
+- Press Play in Unity for the fastest way to test locally.
 - Desktop mode works out of the box in-editor.
 - VR mode should activate automatically if your headset is connected.
 - For a standalone VR version, build an Android APK and sideload it to the headset.
