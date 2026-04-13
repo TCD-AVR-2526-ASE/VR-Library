@@ -60,8 +60,15 @@ public class BookRowUI : MonoBehaviour
         if (bookSystem != null)
         {
             string request = bookTitle.ToLower();
+            string assignedTableLabel = fetchBooks != null ? fetchBooks.GetNextSpawnLabel() : "Unavailable";
             bookSystem.SendMessage("AddBookRequest", request, SendMessageOptions.DontRequireReceiver);
             Debug.Log($"[BookRowUI] Sent request to BookSystem: {request}");
+
+            if (fetchBooks != null)
+            {
+                fetchBooks.ShowLastRequestedTable(assignedTableLabel);
+                fetchBooks.UpdateRequestStatus("Request sent");
+            }
 
             // Visual feedback
             requestButton.interactable = false;

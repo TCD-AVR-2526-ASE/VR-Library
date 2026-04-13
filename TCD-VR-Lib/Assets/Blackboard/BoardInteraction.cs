@@ -13,18 +13,23 @@ public struct StrokeData : INetworkSerializable
     public Vector2 StartUV;
     public Vector2 EndUV;
     public bool Erasing;
+    public Color32 DrawColor;
+    public int BrushSize;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref StartUV);
         serializer.SerializeValue(ref EndUV);
         serializer.SerializeValue(ref Erasing);
+        serializer.SerializeValue(ref DrawColor);
+        serializer.SerializeValue(ref BrushSize);
     }
 }
 
 /// <summary>
 /// Owns the shared blackboard surface, desktop drawing flow, board tool spawning, and replicated stroke history.
 /// New clients rebuild the current board state by replaying the server's cached strokes.
+/// Each user's color and brush size is local only — strokes carry their own color and size.
 /// </summary>
 public class BoardInteraction : NetworkBehaviour
 {
@@ -94,7 +99,8 @@ public class BoardInteraction : NetworkBehaviour
         if (brushSlider != null)
         {
             brushSlider.value = brushSize;
-            brushSlider.onValueChanged.AddListener(val => {
+            brushSlider.onValueChanged.AddListener(val =>
+            {
                 SetBrushSize((int)val);
                 if (brushValueText != null)
                     brushValueText.text = ((int)val).ToString();
@@ -104,7 +110,8 @@ public class BoardInteraction : NetworkBehaviour
         if (eraserSlider != null)
         {
             eraserSlider.value = eraserSize;
-            eraserSlider.onValueChanged.AddListener(val => {
+            eraserSlider.onValueChanged.AddListener(val =>
+            {
                 SetEraserSize((int)val);
                 if (eraserValueText != null)
                     eraserValueText.text = ((int)val).ToString();
@@ -115,20 +122,16 @@ public class BoardInteraction : NetworkBehaviour
             colorButtonImage.color = currentDrawColor;
     }
 
-    // Hook this to ColorButton's OnClick in the Inspector
     /// <summary>
     /// Cycles through the preset desktop chalk colors and updates the UI preview.
+    /// Color change is local only — does not affect other users.
     /// </summary>
     public void OnColorButtonClicked()
     {
         int currentIndex = System.Array.IndexOf(colorPresets, currentDrawColor);
         int next = (currentIndex + 1) % colorPresets.Length;
         currentDrawColor = colorPresets[next];
-
         SetDrawColor(currentDrawColor);
-
-        if (colorButtonImage != null)
-            colorButtonImage.color = currentDrawColor;
     }
 
     public override void OnNetworkSpawn()
@@ -162,10 +165,8 @@ public class BoardInteraction : NetworkBehaviour
         FillBlack();
 
         Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
-        if (shader == null)
-            shader = Shader.Find("Unlit/Texture");
-        if (shader == null)
-            shader = Shader.Find("Sprites/Default");
+        if (shader == null) shader = Shader.Find("Unlit/Texture");
+        if (shader == null) shader = Shader.Find("Sprites/Default");
 
         blackboardMaterial = shader != null ? new Material(shader) : new Material(Shader.Find("Standard"));
 
@@ -237,9 +238,6 @@ public class BoardInteraction : NetworkBehaviour
     /// <summary>
     /// Draws onto the board from a tool ray and forwards the stroke to the server for replication.
     /// </summary>
-    /// <param name="ray">The tool ray cast from chalk or eraser tip.</param>
-    /// <param name="isErasing">Whether the stroke should erase instead of draw.</param>
-    /// <param name="previousUV">The previous sampled UV used to connect continuous strokes.</param>
     public void DrawFromRay(Ray ray, bool isErasing, Vector2? previousUV)
     {
         if (!Physics.Raycast(ray, out RaycastHit hit, interactionToleranceDist)) return;
@@ -247,9 +245,11 @@ public class BoardInteraction : NetworkBehaviour
 
         Vector2 uv = hit.textureCoord;
         Vector2 startUV = previousUV ?? uv;
+        Color strokeColor = isErasing ? eraseColor : drawColor;
+        int strokeSize = isErasing ? eraserSize : brushSize;
 
-        ApplyStrokeLocally(startUV, uv, isErasing);
-        SubmitStrokeRpc(startUV, uv, isErasing);
+        ApplyStrokeLocally(startUV, uv, isErasing, strokeColor, strokeSize);
+        SubmitStrokeRpc(startUV, uv, isErasing, strokeColor, strokeSize);
     }
 
     void DrawAtMousePosition(bool verboseLog)
@@ -283,19 +283,22 @@ public class BoardInteraction : NetworkBehaviour
             Debug.Log($"[BoardInteraction] Mouse raycast hit board at UV {uv}.", this);
 
         Vector2 startUV = lastUV ?? uv;
-        ApplyStrokeLocally(startUV, uv, isEraserMode);
-        SubmitStrokeRpc(startUV, uv, isEraserMode);
+        Color strokeColor = isEraserMode ? eraseColor : drawColor;
+        int strokeSize = isEraserMode ? eraserSize : brushSize;
+
+        ApplyStrokeLocally(startUV, uv, isEraserMode, strokeColor, strokeSize);
+        SubmitStrokeRpc(startUV, uv, isEraserMode, strokeColor, strokeSize);
 
         lastUV = uv;
     }
 
-    void ApplyStrokeLocally(Vector2 startUV, Vector2 endUV, bool erasing)
+    void ApplyStrokeLocally(Vector2 startUV, Vector2 endUV, bool erasing, Color color, int size)
     {
-        DrawStroke(startUV, endUV, erasing);
+        DrawStroke(startUV, endUV, erasing, color, size);
         blackboardTexture.Apply();
     }
 
-    void DrawStroke(Vector2? previousUV, Vector2 currentUV, bool erasing)
+    void DrawStroke(Vector2? previousUV, Vector2 currentUV, bool erasing, Color color, int size)
     {
         if (previousUV.HasValue)
         {
@@ -305,43 +308,40 @@ public class BoardInteraction : NetworkBehaviour
             for (int i = 0; i <= steps; i++)
             {
                 Vector2 lerpedUV = Vector2.Lerp(previousUV.Value, currentUV, i / (float)steps);
-                DrawAtUV(lerpedUV, erasing);
+                DrawAtUV(lerpedUV, erasing, color, size);
             }
         }
         else
         {
-            DrawAtUV(currentUV, erasing);
+            DrawAtUV(currentUV, erasing, color, size);
         }
     }
 
-    void DrawStroke(Vector2 startUV, Vector2 endUV, bool erasing)
+    void DrawStroke(Vector2 startUV, Vector2 endUV, bool erasing, Color color, int size)
     {
-        DrawStroke((Vector2?)startUV, endUV, erasing);
+        DrawStroke((Vector2?)startUV, endUV, erasing, color, size);
     }
 
-    void DrawAtUV(Vector2 uv, bool erasing)
+    void DrawAtUV(Vector2 uv, bool erasing, Color color, int size)
     {
         int x = Mathf.Clamp((int)(uv.x * textureWidth), 0, textureWidth - 1);
         int y = Mathf.Clamp((int)(uv.y * textureHeight), 0, textureHeight - 1);
-        DrawCircle(x, y, erasing);
+        DrawCircle(x, y, erasing, color, size);
     }
 
-    void DrawCircle(int centerX, int centerY, bool erasing)
+    void DrawCircle(int centerX, int centerY, bool erasing, Color color, int size)
     {
-        int currentSize = erasing ? eraserSize : brushSize;
-        Color currentColor = erasing ? eraseColor : drawColor;
-
-        for (int x = -currentSize; x <= currentSize; x++)
+        for (int x = -size; x <= size; x++)
         {
-            for (int y = -currentSize; y <= currentSize; y++)
+            for (int y = -size; y <= size; y++)
             {
-                if (x * x + y * y <= currentSize * currentSize)
+                if (x * x + y * y <= size * size)
                 {
                     int drawX = centerX + x;
                     int drawY = centerY + y;
 
                     if (drawX >= 0 && drawX < textureWidth && drawY >= 0 && drawY < textureHeight)
-                        blackboardTexture.SetPixel(drawX, drawY, currentColor);
+                        blackboardTexture.SetPixel(drawX, drawY, color);
                 }
             }
         }
@@ -377,14 +377,36 @@ public class BoardInteraction : NetworkBehaviour
         Debug.Log($"[BoardInteraction] ClearBoard called. IsServer={IsServer}");
     }
 
-    public void SetDrawColor(Color color) => drawColor = color;
-    public void SetBrushSize(int size) => brushSize = Mathf.Clamp(size, 1, 50);
-    public void SetEraserSize(int size) => eraserSize = Mathf.Clamp(size, 1, 100);
+    /// <summary>
+    /// Sets the local draw color. Does not affect other users.
+    /// </summary>
+    public void SetDrawColor(Color color)
+    {
+        drawColor = color;
+        currentDrawColor = color;
+        if (colorButtonImage != null)
+            colorButtonImage.color = color;
+    }
+
+    /// <summary>
+    /// Sets the local brush size. Does not affect other users.
+    /// </summary>
+    public void SetBrushSize(int size)
+    {
+        brushSize = Mathf.Clamp(size, 1, 50);
+    }
+
+    /// <summary>
+    /// Sets the local eraser size. Does not affect other users.
+    /// </summary>
+    public void SetEraserSize(int size)
+    {
+        eraserSize = Mathf.Clamp(size, 1, 100);
+    }
 
     /// <summary>
     /// Sets whether desktop mouse drawing is currently allowed for the local player.
     /// </summary>
-    /// <param name="enabled">Whether desktop drawing input should be accepted.</param>
     public void SetDesktopInteractionEnabled(bool enabled)
     {
         desktopInteractionEnabled = enabled;
@@ -457,21 +479,28 @@ public class BoardInteraction : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    void SubmitStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing)
+    void SubmitStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing, Color32 color, int size)
     {
-        strokeHistory.Add(new StrokeData { StartUV = startUV, EndUV = endUV, Erasing = erasing });
+        strokeHistory.Add(new StrokeData
+        {
+            StartUV = startUV,
+            EndUV = endUV,
+            Erasing = erasing,
+            DrawColor = color,
+            BrushSize = size
+        });
 
         if (strokeHistory.Count > maxStrokeHistory)
             strokeHistory.RemoveRange(0, Mathf.Min(10, strokeHistory.Count));
 
-        ApplyStrokeLocally(startUV, endUV, erasing);
-        BroadcastStrokeRpc(startUV, endUV, erasing);
+        ApplyStrokeLocally(startUV, endUV, erasing, color, size);
+        BroadcastStrokeRpc(startUV, endUV, erasing, color, size);
     }
 
     [Rpc(SendTo.NotMe)]
-    void BroadcastStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing)
+    void BroadcastStrokeRpc(Vector2 startUV, Vector2 endUV, bool erasing, Color32 color, int size)
     {
-        ApplyStrokeLocally(startUV, endUV, erasing);
+        ApplyStrokeLocally(startUV, endUV, erasing, color, size);
     }
 
     [Rpc(SendTo.Server)]
@@ -500,7 +529,7 @@ public class BoardInteraction : NetworkBehaviour
     void ReceiveBoardHistoryBatchRpc(StrokeData[] batch, bool isLastBatch, RpcParams rpcParams = default)
     {
         foreach (StrokeData stroke in batch)
-            DrawStroke(stroke.StartUV, stroke.EndUV, stroke.Erasing);
+            DrawStroke(stroke.StartUV, stroke.EndUV, stroke.Erasing, stroke.DrawColor, stroke.BrushSize);
 
         if (isLastBatch)
         {

@@ -128,17 +128,34 @@ public class BookSystem : MonoBehaviour
             return;
 
         var discoveredSpawnPoints = new List<Transform>(tableSpawnRoot.childCount);
+        var fallbackSpawnPoints = new List<Transform>(tableSpawnRoot.childCount);
         for (int i = 0; i < tableSpawnRoot.childCount; i++)
         {
             Transform child = tableSpawnRoot.GetChild(i);
             if (child != null)
-                discoveredSpawnPoints.Add(child);
+            {
+                fallbackSpawnPoints.Add(child);
+
+                if (child.name.StartsWith("Table_Right_", System.StringComparison.Ordinal) ||
+                    child.name.StartsWith("Table_Left_", System.StringComparison.Ordinal))
+                    discoveredSpawnPoints.Add(child);
+            }
+        }
+
+        if (discoveredSpawnPoints.Count == 0)
+        {
+            discoveredSpawnPoints = fallbackSpawnPoints;
+        }
+        else
+        {
+            discoveredSpawnPoints.Sort(CompareNamedTableSpawnPoints);
         }
 
         if (discoveredSpawnPoints.Count > 0)
         {
             tableSpawnPoints = discoveredSpawnPoints.ToArray();
             Debug.Log($"[BookSystem] Using {tableSpawnPoints.Length} table spawn points from '{tableSpawnRoot.name}'.");
+            Debug.Log($"[BookSystem] Table spawn order: {string.Join(", ", System.Array.ConvertAll(tableSpawnPoints, t => t != null ? t.name : "<null>"))}");
         }
     }
 
@@ -152,6 +169,41 @@ public class BookSystem : MonoBehaviour
         }
 
         return null;
+    }
+
+    private static int CompareNamedTableSpawnPoints(Transform a, Transform b)
+    {
+        ParseNamedTableSpawnPoint(a != null ? a.name : string.Empty, out int rowA, out int tableA, out bool isLeftA);
+        ParseNamedTableSpawnPoint(b != null ? b.name : string.Empty, out int rowB, out int tableB, out bool isLeftB);
+
+        int rowCompare = rowA.CompareTo(rowB);
+        if (rowCompare != 0) return rowCompare;
+
+        if (isLeftA != isLeftB)
+            return isLeftA ? 1 : -1; // Right side first, then left side, within each row.
+
+        return tableA.CompareTo(tableB);
+    }
+
+    private static void ParseNamedTableSpawnPoint(string name, out int row, out int table, out bool isLeft)
+    {
+        row = int.MaxValue;
+        table = int.MaxValue;
+        isLeft = false;
+
+        if (string.IsNullOrEmpty(name))
+            return;
+
+        isLeft = name.StartsWith("Table_Left_", System.StringComparison.Ordinal);
+
+        int rowIndex = name.LastIndexOf("_R", System.StringComparison.Ordinal);
+        int tableIndex = name.LastIndexOf("_T", System.StringComparison.Ordinal);
+
+        if (rowIndex >= 0 && tableIndex > rowIndex + 2)
+            int.TryParse(name.Substring(rowIndex + 2, tableIndex - (rowIndex + 2)), out row);
+
+        if (tableIndex >= 0 && tableIndex + 2 <= name.Length - 1)
+            int.TryParse(name.Substring(tableIndex + 2), out table);
     }
 
     private void Update()
@@ -206,6 +258,14 @@ public class BookSystem : MonoBehaviour
         }
 
         title = title.Trim();
+
+        if (networkBookManager != null && networkBookManager.CanNetworkBooks())
+        {
+            networkBookManager.RequestSharedBook(title);
+            Debug.Log($"[BookSystem] Forwarded shared book request for '{title}' to NetworkBookManager.");
+            return;
+        }
+
         int tableIndex = GetNextAvailableTableIndex();
 
         if (tableIndex >= 0)
@@ -234,6 +294,34 @@ public class BookSystem : MonoBehaviour
         }
 
         return -1;
+    }
+
+    /// <summary>
+    /// Returns a short UI-friendly label for the next table that would be used by an auto-routed request.
+    /// </summary>
+    public string GetNextAvailableTableLabel()
+    {
+        int tableIndex = GetNextAvailableTableIndex();
+        return tableIndex >= 0 ? $"Table {tableIndex + 1}" : "Fallback Spawn";
+    }
+
+    public bool TryReserveNextAvailableTable(out int tableIndex)
+    {
+        tableIndex = GetNextAvailableTableIndex();
+        if (tableIndex < 0)
+            return false;
+
+        tableOccupied[tableIndex] = true;
+        Debug.Log($"[BookSystem] Reserved Table {tableIndex + 1}.");
+        return true;
+    }
+
+    public void MarkTableOccupied(int index)
+    {
+        if (index < 0 || tableOccupied == null || index >= tableOccupied.Length)
+            return;
+
+        tableOccupied[index] = true;
     }
 
     /// <summary>

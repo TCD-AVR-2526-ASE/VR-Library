@@ -22,6 +22,8 @@ public class FetchBooks : MonoBehaviour
     [Header("UI List")]
     public Transform content;      // ScrollView -> Viewport -> Content
     public GameObject bookRowPrefab; // Optional — if null, rows are built at runtime
+    public TMP_Text tableStatusText;
+    public TMP_Text requestStatusText;
 
     [Header("Legacy Table Selection")]
     [Tooltip("Old table button count. Kept only so the legacy buttons can be hidden.")]
@@ -33,11 +35,105 @@ public class FetchBooks : MonoBehaviour
 
     private bool isSearching;
     private Button[] tableButtons;
+    private BookSystem bookSystem;
 
     private void Start()
     {
+        bookSystem = FindFirstObjectByType<BookSystem>();
+        EnsureStatusTexts();
+        UpdateNextSpawnStatus();
+        UpdateRequestStatus("Ready");
         searchButton.onClick.AddListener(() => StartCoroutine(SearchGutenberg()));
         HideLegacyTableButtons();
+    }
+
+    private void EnsureStatusTexts()
+    {
+        if (searchButton == null)
+            return;
+
+        Transform buttonParent = searchButton.transform.parent;
+        if (buttonParent == null)
+            return;
+
+        TMP_Text buttonText = searchButton.GetComponentInChildren<TMP_Text>(true);
+
+        if (tableStatusText == null)
+            tableStatusText = CreateStatusText("Table Status Text", buttonParent, buttonText, searchButton.transform.GetSiblingIndex() + 1);
+
+        if (requestStatusText == null)
+            requestStatusText = CreateStatusText("Request Status Text", buttonParent, buttonText, tableStatusText.transform.GetSiblingIndex() + 1);
+    }
+
+    private TMP_Text CreateStatusText(string objectName, Transform parent, TMP_Text buttonText, int siblingIndex)
+    {
+        GameObject statusGO = new GameObject(objectName, typeof(RectTransform), typeof(LayoutElement));
+        statusGO.transform.SetParent(parent, false);
+        statusGO.transform.SetSiblingIndex(siblingIndex);
+
+        var layoutElement = statusGO.GetComponent<LayoutElement>();
+        layoutElement.preferredHeight = 26f;
+        layoutElement.minHeight = 26f;
+
+        var statusRect = statusGO.GetComponent<RectTransform>();
+        statusRect.sizeDelta = new Vector2(0f, 26f);
+
+        TMP_Text statusText = statusGO.AddComponent<TextMeshProUGUI>();
+        statusText.fontSize = buttonText != null ? buttonText.fontSize * 0.6f : 14f;
+        statusText.alignment = TextAlignmentOptions.Center;
+        statusText.color = new Color(0.8f, 0.8f, 0.8f, 1f);
+        statusText.enableWordWrapping = true;
+        statusText.raycastTarget = false;
+
+        if (buttonText != null)
+        {
+            statusText.font = buttonText.font;
+            statusText.fontSharedMaterial = buttonText.fontSharedMaterial;
+        }
+
+        return statusText;
+    }
+
+    private void EnsureBookSystem()
+    {
+        if (bookSystem == null)
+            bookSystem = FindFirstObjectByType<BookSystem>();
+    }
+
+    public string GetNextSpawnLabel()
+    {
+        EnsureBookSystem();
+        return bookSystem != null ? bookSystem.GetNextAvailableTableLabel() : "Unavailable";
+    }
+
+    public void UpdateNextSpawnStatus()
+    {
+        EnsureStatusTexts();
+
+        if (tableStatusText == null)
+            return;
+
+        tableStatusText.text = $"Next spawn: {GetNextSpawnLabel()}";
+    }
+
+    public void ShowLastRequestedTable(string assignedTableLabel)
+    {
+        EnsureStatusTexts();
+
+        if (tableStatusText == null)
+            return;
+
+        tableStatusText.text = $"Last request: {assignedTableLabel}";
+    }
+
+    public void UpdateRequestStatus(string status)
+    {
+        EnsureStatusTexts();
+
+        if (requestStatusText == null)
+            return;
+
+        requestStatusText.text = status;
     }
 
     /// <summary>
@@ -67,12 +163,14 @@ public class FetchBooks : MonoBehaviour
     private void LoadLocalBooks()
     {
         Debug.Log("[FetchBooks] Loading local books...");
+        UpdateRequestStatus("Using local catalogue");
 
         TextAsset jsonFile = Resources.Load<TextAsset>("BookFiles/books");
 
         if (jsonFile == null)
         {
             Debug.LogError("Local books.json not found in Resources!");
+            UpdateRequestStatus("Local catalogue unavailable");
             return;
         }
 
@@ -81,6 +179,7 @@ public class FetchBooks : MonoBehaviour
         if (localData == null || localData.books == null || localData.books.Length == 0)
         {
             Debug.LogWarning("No local books found.");
+            UpdateRequestStatus("No local books found");
             return;
         }
 
@@ -93,12 +192,15 @@ public class FetchBooks : MonoBehaviour
         }
 
         Debug.Log($"[FetchBooks] Loaded {count} local books.");
+        UpdateNextSpawnStatus();
+        UpdateRequestStatus($"Using local catalogue ({count} books)");
     }
 
     private IEnumerator SearchGutenberg()
     {
         if (isSearching) yield break;
         isSearching = true;
+        UpdateRequestStatus("Sending request...");
 
         string title = titleInput != null ? titleInput.text.Trim() : "";
         string author = authorInput != null ? authorInput.text.Trim() : "";
@@ -126,6 +228,8 @@ public class FetchBooks : MonoBehaviour
         if (queryParts.Count == 0)
         {
             Debug.LogWarning("[FetchBooks] Enter at least one search term.");
+            UpdateNextSpawnStatus();
+            UpdateRequestStatus("Enter a search term");
             isSearching = false;
             yield break;
         }
@@ -143,6 +247,7 @@ public class FetchBooks : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError($"[FetchBooks] API failed: {request.error}");
+                UpdateRequestStatus("Gutenberg failed - using local catalogue");
 
                 // Clear UI
                 foreach (Transform child in content)
@@ -164,6 +269,7 @@ public class FetchBooks : MonoBehaviour
             if (response == null || response.results == null || response.results.Length == 0)
             {
                 Debug.Log("[FetchBooks] No API books. Falling back to local.");
+                UpdateRequestStatus("No Gutenberg results - using local catalogue");
 
                 LoadLocalBooks();
 
@@ -183,8 +289,10 @@ public class FetchBooks : MonoBehaviour
             }
 
             Debug.Log($"[FetchBooks] Found {count} books.");
+            UpdateRequestStatus($"Gutenberg success ({count} results)");
         }
 
+        UpdateNextSpawnStatus();
         isSearching = false;
     }
 
