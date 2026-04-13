@@ -19,7 +19,7 @@ As a general rule of thumb, all files in the `Assets/` folder were conceived and
 # Compile & Deploy instructions
 
 ## Releases
-The latest downloadable builds are available from the repository's GitHub Releases page.
+The latest downloadable builds are available from the repository's GitHub Releases page or on our Itch.io page: https://norgedout.itch.io/vr-library
 
 Use the published release if you want a ready-made desktop or headset build instead of compiling the project yourself.
 
