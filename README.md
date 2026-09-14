@@ -16,6 +16,8 @@ As a general rule of thumb, all files in the `Assets/` folder were conceived and
 - `Packages`
 * these packages include general VR controls and flows, which we have in part edited to suit our needs.
 
+* **For anyone reading this to assess an individual's contributions, please note the bulk of the work towards this project was done using a different version control tool built into Unity. Therefore the commit history here may not mirror any individual's contributions accurately.**
+
 # Compile & Deploy instructions
 
 ## Releases
